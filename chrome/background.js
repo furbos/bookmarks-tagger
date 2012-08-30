@@ -1,19 +1,14 @@
-function addListeners()
-{
-	console.log('add listeners');
-	window.addEventListener('keyup', addBookmark, false);
+if (!localStorage['initialized']) {
+	localStorage['initialized'] = true;
 }
 
-function addBookmark(aEvent)
-{
-	console.log('addBookmark');
-	console.log(aEvent);
-	switch(aEvent.which) {
-		case 78:
-			console.log('yea');
-			break;
-	}
-}
+chrome.bookmarks.onCreated.addListener(function(id, bookmark) { 
+	console.log('Bookmark has been added'); console.log(id); console.log(bookmark); 
 
-
-addListeners();
+	chrome.tabs.getSelected(null,
+		function(aSelectedTab) {
+			console.log(aSelectedTab);
+			//chrome.pageAction.show(aSelectedTab.id);
+		}
+	);
+});
