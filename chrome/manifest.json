@@ -2,7 +2,11 @@
 	"name": "Bookmarks Tagger",
 	"version": "1.0",
 	"manifest_version": 2,
-	"description": "Gives a tag to your bookmark sites",
+	"description": "Gives a tag to your bookmarks",
+
+	"icons": {
+		"16": "icon.png"
+	},
 
 	"browser_action": {
 		"default_icon": "icon.png",
@@ -10,18 +14,17 @@
 		"default_popup": "popup.html"
 	},
 
-	"content_scripts": [
-		{
-			"matches": ["*://*/*"],
-			"js": ["bookmarks.js"]
-		}
-	],
-
 	"background": {
 		"scripts": ["background.js"]
 	},
 
+	"omnibox": { "keyword": "bt" },
+
 	"permissions": [
-		"bookmarks", "tabs", "*://*/*"
-	]
+		"bookmarks", "tabs"
+	],
+	
+	"options_page": "options.html",
+	
+	"content_security_policy": "script-src 'self'; object-src 'self'"
 }
