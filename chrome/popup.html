@@ -1,5 +1,55 @@
+<!doctype html>
 <html>
+<head>
+	<title>Bookmarks Tagger</title>
+	<meta charset="utf-8">
+	<script src="popup.js"></script>
+	<style>
+	body {
+		font: 13px/22px 'Open Sans', arial, sans-serif;
+		margin: 0;
+		padding: 8px;
+	}
+	
+	a {
+		cursor: pointer;
+	}
+	
+	a#remove {
+		text-decoration: underline;
+	}
+	
+	div#tags-bubbles {
+		padding: 7px 2px 0 2px;
+	}
+	
+	div#tags-bubbles a {
+		color: #fff;
+		background-color: #d2ae56;
+		border: 1px solid #d2ae56;
+		margin-right: 4px;
+		padding: 1px 2px 1px 2px;
+	}
+	
+	div#tags-bubbles a:after {
+		/* 
+		ballot x 
+		content: '\0000a0☒';
+		*/
+		content: '\0000a0✗';
+	}
+	
+	div#tags-bubbles a:hover {
+		background-color: #fff;
+		color: #d2ae56;
+	}
+	</style>
+</head>
 <body>
-	asdasd
+	<div style="float: right;"><a id="remove">Remove</a></div>
+	Title:&nbsp;<input type="text" size="30" name="title" id="title" tabindex="2" /><br>
+	Tags:&nbsp;<input type="text" size="27" name="tags" id="tags" tabindex="1" />&nbsp;⏎<br>
+	<div id="tags-bubbles">
+	</div>
 </body>
 </html>
