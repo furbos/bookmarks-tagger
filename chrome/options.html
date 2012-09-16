@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+<head>
+	<title>Bookmarks Tagger Options</title>
+	<meta charset="utf-8">
+	<script src="options.js"></script>
+	<style>
+	body {
+		font: 13px/22px 'Open Sans', arial, sans-serif;
+		margin: 0;
+		padding: 8px;
+	}
+	
+	fieldset {
+		border: 1px solid #d2ae56;
+		margin-bottom: 12px;
+	}
+	
+	.options {
+		float: left;
+		width: 150px;
+		margin-right: 10px;
+	}
+	
+	.search {
+		float: left;
+		width: 720px;
+		padding: 0;
+	}
+	
+	legend {
+		background-color: #fff;
+		font-weight: bold;
+		color: #d2ae56;
+	}
+	
+	.search legend {
+		margin-left: 9px;
+	}
+	
+	.search-input-block {
+		padding: 9px;
+		margin-bottom: 10px;
+	}
+	
+	p.small {
+		font-size: smaller;
+		line-height: 12px;
+	}
+	
+	#add_button {
+		float: right;
+	}
+	
+	#import_button {
+		float: right;
+	}
+	
+	
+	/* Search results table */
+	
+	#results {
+		border-top: 1px solid #d2ae56;
+		width: 720px;
+		border-spacing: 0;
+		border-collapse: collapse;
+	}
+	
+	#results th {
+		text-align: left;
+	}
+	
+	#results td {
+		padding: 2px 2px 2px 4px;
+		vertical-align: top;
+	}
+	
+	#results td span {
+		border: 1px solid #fff;
+		padding: 2px;
+	}
+	
+	#results td span:hover {
+		border: 1px solid #f0f0f0;
+		background-color: #fafafa;
+	}
+	
+	#results td span:hover:before {
+		content: '✎\0000a0';
+	}
+	
+	#results td.title, #results td.url {
+		border-right: 1px solid #d2ae56;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	
+	#results td.title {
+		padding-left: 10px;
+		max-width: 200px;
+	}
+	
+	#results td.url {
+		max-width: 200px;
+	}
+	
+	#results td.tags {
+		max-width: 301px;
+		line-height: 16px;
+	}
+	
+	#add {
+		border-top: 1px solid #d2ae56;
+		width: 720px;
+		border-spacing: 0;
+		border-collapse: collapse;
+		display: none;
+	}
+	
+	.tags a {
+		color: #fff;
+		background-color: #d2ae56;
+		border: 1px solid #d2ae56;
+		margin: 1px 4px 1px 0;
+		padding: 1px 2px 1px 2px;
+		float: left;
+	}
+	
+	.tags a:after {
+		content: '\0000a0✗';
+	}
+	
+	.tags a:hover {
+		background-color: #fff;
+		color: #d2ae56;
+		cursor: pointer;
+	}
+	
+	.tags a.plus {
+		background-color: #f0f0f0;
+		border: 1px solid #f0f0f0;
+	}
+	
+	.tags a.plus:after {
+		content: '';
+	}
+	
+	.tags a.plus:hover {
+		color: #000;
+	}
+	</style>
+</head>
+<body>
+	<fieldset class="options">
+		<legend>Options</legend>
+		Omnibox keyword: <strong>bt</strong><br />
+		<p class="small">Unfortunately there is no possibility to allow users to change the keyword due to chrome extension API limitations. I hope this will change in the future.</p>
+	</fieldset>
+
+	<fieldset class="search">
+		<legend>Search and manage my bookmarks</legend>
+		
+		<div class="search-input-block">
+			<input type="text" name="search" id="search_input" value="" size="40" />
+			<button id="search_button">search</button>
+			<button id="add_button">add new bookmark</button>
+			<button id="import_button" disabled=disabled>import bookmarks</button>
+		</div>
+		
+		<table id="add">
+			<tbody>
+				<tr>
+					<td>kvak</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<table id="results">
+<!--
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Url</th>
+					<th>Tags</th>
+				</tr>
+			</thead>
+-->			
+			<tbody>
+				<tr>
+					<td class="title"><span>Google</span></td>
+					<td class="url"><span>http://www.google.com/</span></td>
+					<td class="tags"><a>kvak</a><a>kroch</a><a>mnau</a><a class="plus">+</a></td>
+				</tr>
+				<tr>
+					<td class="title"><span>bookmarks :: Remember, remember, the velvet November</span></td>
+					<td class="url"><span>http://www.kyberia.sk/</span></td>
+					<td class="tags"><a>flamewar</a><a>facepalm</a><a>jailbait</a><a>alterega</a><a>riesicky</a><a class="plus">+</a></td>
+				</tr>
+				<tr>
+					<td class="title"><span>Freeones</span></td>
+					<td class="url"><span>http://www.freeones.com/</span></td>
+					<td class="tags"><a>porn</a><a>work</a><a class="plus">+</a></td>
+				</tr>
+				<tr>
+					<td class="title"><span>Stackoverflow</span></td>
+					<td class="url"><span>http://www.stackoverflow.com/some-very-long-url/</span></td>
+					<td class="tags"><a>css</a><a>php</a><a>devel</a><a>html5</a><a>js</a><a class="plus">+</a></td>
+				</tr>
+				<tr>
+					<td class="title"><span>Is it friday?</span></td>
+					<td class="url"><span>http://www.isitfriday.org/</span></td>
+					<td class="tags"><a>friday</a><a>work</a><a class="plus">+</a></td>
+				</tr>
+			</tbody>
+		</table>
+		
+	</fieldset>
+</body>
+</html>
