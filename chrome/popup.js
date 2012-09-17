@@ -38,9 +38,9 @@ function bookmarksTaggerPopup()
 	this.addListeners = function()
 	{
 		document.addEventListener('DOMContentLoaded', function () {
-			document.getElementById('tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
-			document.getElementById('title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
-			document.getElementById('remove').addEventListener('click', function(aEvent) { mThis.removeBookmark(); window.close(); });
+			$('tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
+			$('title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
+			$('remove').addEventListener('click', function(aEvent) { mThis.removeBookmark(); window.close(); });
 		});
 	};
 	
@@ -50,7 +50,7 @@ function bookmarksTaggerPopup()
 	 */
 	this.createTagsBubbles = function()
 	{
-		lTagsBubbles         = document.getElementById('tags-bubbles');
+		lTagsBubbles         = $('tags-bubbles');
 		lTagsBubblesChildren = document.querySelectorAll('div[id="tags-bubbles"] a');
 
 		for (var i = 0; i < lTagsBubblesChildren.length; i++) {
@@ -71,11 +71,11 @@ function bookmarksTaggerPopup()
 	 */
 	this.listenerTagsKeyUp = function(aEvent)
 	{
-		this.mPageTags = this.mBgPage.lBookmarksTaggerBackground.uniqueArray(document.getElementById('tags').value.split(' '));
+		this.mPageTags = this.mBgPage.lBookmarksTaggerBackground.uniqueArray($('tags').value.split(' '));
 		this.createTagsBubbles();
 		
 		switch (aEvent.which) {
-			case 13:
+			case KEY_ENTER:
 				this.saveBookmark();
 				window.close();
 				break;
@@ -88,12 +88,12 @@ function bookmarksTaggerPopup()
 	 */
 	this.listenerTitleKeyUp = function(aEvent)
 	{
-		this.mPageTitle = document.getElementById('title').value;
+		this.mPageTitle = $('title').value;
 		
 		switch (aEvent.which) {
-			case 13:
+			case KEY_ENTER:
 				this.saveBookmark();
-				document.getElementById('tags').focus();
+				$('tags').focus();
 				break;
 		}
 	}
@@ -108,11 +108,11 @@ function bookmarksTaggerPopup()
 		var lLeftTrim = new RegExp('\\s+' + lTag);
 		var lRightTrim = new RegExp(lTag + '\\s+');
 		
-		lTags = document.getElementById('tags');
+		lTags = $('tags');
 		lTags.value = lTags.value.replace(lLeftTrim, '').replace(lRightTrim, '').replace(lTag, '');
 		aElement.parentNode.removeChild(aElement);
 		
-		this.mPageTags = this.mBgPage.lBookmarksTaggerBackground.uniqueArray(document.getElementById('tags').value.split(' '));
+		this.mPageTags = this.mBgPage.lBookmarksTaggerBackground.uniqueArray($('tags').value.split(' '));
 		
 		this.saveBookmark();
 	};
@@ -135,14 +135,14 @@ function bookmarksTaggerPopup()
 					mThis.mPageTitle = aResponse.title;
 					mThis.mPageTags  = aResponse.tags;
 					
-					document.getElementById('remove').style.display = 'block';
+					$('remove').style.display = 'block';
 					mThis.createTagsBubbles();
 				} else {
-					document.getElementById('remove').style.display = 'none';
+					$('remove').style.display = 'none';
 				}
 				
-				document.getElementById('title').value = mThis.mPageTitle;
-				document.getElementById('tags').value  = mThis.mPageTags.join(' ');
+				$('title').value = mThis.mPageTitle;
+				$('tags').value  = mThis.mPageTags.join(' ');
 			});
 		});
 	};
