@@ -15,6 +15,19 @@ var $ = function(aElementId) {
 
 
 /**
+ * Check if the array contains the item
+ */
+var inArray = function(aNeedle, aHaystack)
+{
+	for (var i = 0; i < aHaystack.length; i++) {
+		if (aHaystack[i] == aNeedle) return true;
+	}
+	
+	return false;
+};
+
+
+/**
  * Some useful methods for html elements
  */
 HTMLElement.prototype.toggle = function() {

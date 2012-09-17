@@ -189,7 +189,7 @@ var bookmarksTaggerBackground = function()
 		skipResult:
 		for (var i in this.mSuggestions) {
 			for (var t in aTags) { 
-				if (!this.inArray(aTags[t], this.mSuggestions[i].tags)) continue skipResult;
+				if (!inArray(aTags[t], this.mSuggestions[i].tags)) continue skipResult;
 			}
 			
 			if (this.mSuggestions[i]) {
@@ -272,19 +272,6 @@ var bookmarksTaggerBackground = function()
 		
 		return true;
 	};
-	
-	
-	/**
-	 * Check if the array contains the item
-	 */
-	this.inArray = function(aNeedle, aHaystack)
-	{
-		for (var i in aHaystack) {
-			if (aHaystack[i] == aNeedle) return true;
-		}
-		
-		return false;
-	};
 
 	
 	/**
@@ -295,7 +282,7 @@ var bookmarksTaggerBackground = function()
 		var lUniqueArray = [];
 		
 		for (var i in aArray) {
-			if (!this.inArray(aArray[i], lUniqueArray) && aArray[i].replace(/^\s+/, '').replace(/\s+$/, '') != '') lUniqueArray.push(aArray[i]);
+			if (!inArray(aArray[i], lUniqueArray) && aArray[i].replace(/^\s+/, '').replace(/\s+$/, '') != '') lUniqueArray.push(aArray[i]);
 		}
 		
 		return lUniqueArray;
