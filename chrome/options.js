@@ -2,8 +2,9 @@ function bookmarksTaggerOptions()
 {
 	var mThis = this;
 	
-	//this.mOptionOmniboxKeyword = '';
+	this.mBgPage;
 
+	
 	/**
 	 * Initialize
 	 */
@@ -20,7 +21,10 @@ function bookmarksTaggerOptions()
 	{
 		lSearchTerm = decodeURIComponent(window.location.hash.substring(1));
 		
-		if (lSearchTerm) document.getElementById('search_input').value = lSearchTerm;
+		if (lSearchTerm) {
+			$('input_search').value = lSearchTerm;
+			$('input_search').focus();
+		}
 	}
 	
 	
@@ -30,41 +34,112 @@ function bookmarksTaggerOptions()
 	this.addListeners = function()
 	{
 		document.addEventListener('DOMContentLoaded', function () {
-			//document.getElementById('options_save').addEventListener('click', function(aEvent) { mThis.listenerOptionsSaveClick(aEvent); });
-			//document.getElementById('options_reset').addEventListener('click', function(aEvent) { mThis.listenerOptionsResetClick(aEvent); });
-			document.getElementById('search_button').addEventListener('click', function(aEvent) { mThis.showResults(); });
-			document.getElementById('add_button').addEventListener('click', function(aEvent) { mThis.showAddBookmark(); });
+			$('button_search').addEventListener('click', function(aEvent) { mThis.showResults(); });
+			$('button_add').addEventListener('click', function(aEvent) { mThis.showAddBookmark(); });
+			$('button_remove_all').addEventListener('click', function(aEvent) { if (confirm('Are you sure you want to permanently remove all yours tagged bookmarks in Bookmarks Tagger?\n\nYour chrome bookmarks will keep intact.')) { mThis.removeAll(); } });
 			
-			//mThis.listenerOptionsResetClick();
+			$('input_search').addEventListener('keyup', function(aEvent) { mThis.listenerSearchKeyUp(aEvent); });
+			
+			$('add_input_title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
+			$('add_input_url').addEventListener('focus', function(aEvent) { mThis.listenerUrlFocus(aEvent); });
+			$('add_input_url').addEventListener('keyup', function(aEvent) { mThis.listenerUrlKeyUp(aEvent); });
+			$('add_input_tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
+			
+			mThis.mBgPage = chrome.extension.getBackgroundPage();
+			mThis.loadOptions();
 			mThis.initializeSearchTerm();
 		});
 	};
 	
 	
 	/**
-	 * Listener for "click" on save options button
+	 * Listener for search input box for key up event
 	 */
-	this.listenerOptionsSaveClick = function(aEvent)
+	this.listenerSearchKeyUp = function(aEvent)
 	{
-		//localStorage['omnibox_keyword'] = this.mOptionOmniboxKeyword = document.getElementById('omnibox_keyword').value;
+		switch (aEvent.which) {
+			case KEY_TAB:
+				break;
+				
+			case KEY_ESCAPE:
+				break;
+				
+			case KEY_ENTER:
+				break;
+		}
 	}
 	
 	
 	/**
-	 * Listener for "click" on reset options button
+	 * Listener for input field "title" in add form for event onkeyup
 	 */
-	this.listenerOptionsResetClick = function(aEvent)
+	this.listenerTitleKeyUp = function(aEvent)
 	{
-		//document.getElementById('omnibox_keyword').value = this.mOptionOmniboxKeyword = localStorage['omnibox_keyword'];
-	};
+		switch (aEvent.which) {
+			case KEY_ENTER:
+				$('add_input_url').focus();
+				break;
+		}
+	}
 	
 	
 	/**
-	 * Load options from the localStorage
+	 * Listener for input field "url" in add form for event onkeyup
+	 */
+	this.listenerUrlKeyUp = function(aEvent)
+	{
+		switch (aEvent.which) {
+			case KEY_ENTER:
+				$('add_input_tags').focus();
+				break;
+		}
+	}
+	
+	
+	/**
+	 * Listener for input field "tags" in add form for event onkeyup
+	 */
+	this.listenerTagsKeyUp = function(aEvent)
+	{
+		switch (aEvent.which) {
+			case KEY_ENTER:
+				// save bookmark and probably close the window
+				break;
+		}
+	}
+	
+	
+	/**
+	 * Listener for input field "url" in add form for event onfocus
+	 */
+	this.listenerUrlFocus = function(aEvent)
+	{
+		var lInputUrl = $('add_input_url');
+		
+		if (lInputUrl.value == 'http://') {
+			setTimeout(function()
+			{
+				lInputUrl.setSelectionRange(7, 7);
+			}, 1);
+		}
+	}
+	
+	
+	/**
+	 * Remove all bookmarks
+	 */
+	this.removeAll = function()
+	{
+		//
+	}
+	
+	
+	/**
+	 * Load options from localStorage
 	 */
 	this.loadOptions = function()
 	{
-		//this.mOptionOmniboxKeyword = localStorage['omnibox_keyword'];
+		// Nothing for a now.
 	};
 	
 	
@@ -73,8 +148,17 @@ function bookmarksTaggerOptions()
 	 */
 	this.showAddBookmark = function()
 	{
-		document.getElementById('results').style.display = 'none';
-		document.getElementById('add').style.display = 'block';
+		$('results').hide();
+		$('add').show();
+		
+		$('add_title').innerHTML = 'Add new bookmark';
+		$('add_remove').style.display = 'none';
+		
+		$('add_input_title').value = '';
+		$('add_input_url').value = 'http://';
+		$('add_input_tags').value = '';
+		
+		$('add_input_title').focus();
 	}
 	
 	
@@ -83,8 +167,8 @@ function bookmarksTaggerOptions()
 	 */
 	this.showResults = function()
 	{
-		document.getElementById('add').style.display = 'none';
-		document.getElementById('results').style.display = 'block';
+		$('add').style.display = 'none';
+		$('results').style.display = 'block';
 	}
 }
 

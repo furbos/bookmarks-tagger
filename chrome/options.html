@@ -3,6 +3,7 @@
 <head>
 	<title>Bookmarks Tagger Options</title>
 	<meta charset="utf-8">
+	<script src="global.js"></script>
 	<script src="options.js"></script>
 	<style>
 	body {
@@ -12,8 +13,11 @@
 	}
 	
 	fieldset {
-		border: 1px solid #d2ae56;
+		border-width: 1px 1px 2px 1px;
+		border-style: solid;
+		border-color: #7c4790;
 		margin-bottom: 12px;
+		position: relative;
 	}
 	
 	.options {
@@ -26,12 +30,13 @@
 		float: left;
 		width: 720px;
 		padding: 0;
+		background-color: #fbf7fd;
 	}
 	
 	legend {
-		background-color: #fff;
+		
 		font-weight: bold;
-		color: #d2ae56;
+		color: #7c4790;
 	}
 	
 	.search legend {
@@ -39,20 +44,54 @@
 	}
 	
 	.search-input-block {
-		padding: 9px;
+		padding: 9px 9px 9px 36px;
 		margin-bottom: 10px;
 	}
 	
 	p.small {
 		font-size: smaller;
 		line-height: 12px;
+		padding: 0;
+	}
+
+	#popup_menu {
+		background-color: #fbf7fd;
+		border: 1px solid #fbf7fd;
+		padding: 8px;
+		position: absolute;
+		width: 145px;
+		right: 10px;
 	}
 	
-	#add_button {
+	#popup_menu button {
+		float: left;
+		width: 145px;
+		text-align: center;
+	}
+	
+	#popup_menu .hidden {
+		display: none;
+	}
+	
+	#popup_menu:hover .first {
+		margin-bottom: 16px;
+	}
+	
+	#popup_menu:hover {
+		border: 1px solid #7c4790;
+		border-width: 1px 1px 2px 1px;
+		box-shadow: 0 0 16px -4px #7c4790;
+	}
+	
+	#popup_menu:hover .hidden {
+		display: block;
+	}
+
+	#button_add {
 		float: right;
 	}
 	
-	#import_button {
+	#button_import {
 		float: right;
 	}
 	
@@ -60,10 +99,13 @@
 	/* Search results table */
 	
 	#results {
-		border-top: 1px solid #d2ae56;
+		border-top: 1px solid #7c4790;
 		width: 720px;
 		border-spacing: 0;
 		border-collapse: collapse;
+		font-size: 100%;
+		display: block;
+		background-color: #fff;
 	}
 	
 	#results th {
@@ -76,78 +118,127 @@
 	}
 	
 	#results td span {
-		border: 1px solid #fff;
-		padding: 2px;
+		padding-left: 4px;
 	}
-	
-	#results td span:hover {
-		border: 1px solid #f0f0f0;
-		background-color: #fafafa;
-	}
-	
-	#results td span:hover:before {
-		content: '✎\0000a0';
-	}
-	
-	#results td.title, #results td.url {
-		border-right: 1px solid #d2ae56;
+
+	#results td.title {
+		border-right: 1px solid #7c4790;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 	
-	#results td.title {
-		padding-left: 10px;
-		max-width: 200px;
+	#results td.actions {
+		padding-left: 6px;
 	}
 	
-	#results td.url {
-		max-width: 200px;
+	#results td.actions a {
+		text-decoration: none;
+		color: #a0a0a0;
+		visibility: hidden;
+		font-size: 120%;
+	}
+	
+	#results td.actions a:hover {
+		color: #7c4790;
+	}
+	
+	#results tr:hover td.actions a {
+		visibility: visible;
+	}
+	
+	#results td.title {
+		max-width: 440px;
+	}
+	
+	#results td.title a {
+		color: blue;
+	}
+	
+	#results td.title span {
+		color: #a0a0a0;
+		text-decoration: underline;
+		font-size: smaller;
 	}
 	
 	#results td.tags {
-		max-width: 301px;
+		width: 230px;
+		max-width: 220px;
 		line-height: 16px;
 	}
 	
+	
+	/* Add / Edit bookmark form */
+	
 	#add {
-		border-top: 1px solid #d2ae56;
+		border-top: 1px solid #7c4790;
 		width: 720px;
 		border-spacing: 0;
 		border-collapse: collapse;
 		display: none;
+		background-color: #fff;
+	}
+	
+	#add td {
+		padding: 2px;
+	}
+	
+	#add td.first {
+		width: 185px;
+	}
+	
+	#add td.title {
+		width: 30px;
+		font-weight: bold;
+		color: #7c4790;
+		text-align: right;
+	}
+	
+	#add th {
+		font-size: 110%;
+	}
+	
+	#add td.add-tags {
+		padding-left: 5px;
+	}
+	
+	#add td.add-tags a {
+		color: #fff;
+		background-color: #7ea0cd;
+		border: 1px solid #7ea0cd;
+		margin-right: 4px;
+		padding: 1px 2px 1px 2px;
+		cursor: pointer;
+	}
+	
+	#add td.add-tags a:after {
+		/* 
+		ballot x 
+		content: '\0000a0☒';
+		*/
+		content: '\0000a0✗';
+	}
+	
+	#add td.add-tags a:hover {
+		background-color: #fff;
+		color: #7ea0cd;
+	}
+	
+	#add tfoot tr td {
+		height: 16px;
+	}
+	
+	#add thead tr th {
+		height: 36px;
 	}
 	
 	.tags a {
 		color: #fff;
-		background-color: #d2ae56;
-		border: 1px solid #d2ae56;
+		background-color: #7ea0cd;
+		border: 1px solid #7ea0cd;
 		margin: 1px 4px 1px 0;
 		padding: 1px 2px 1px 2px;
 		float: left;
-	}
-	
-	.tags a:after {
-		content: '\0000a0✗';
-	}
-	
-	.tags a:hover {
-		background-color: #fff;
-		color: #d2ae56;
-		cursor: pointer;
-	}
-	
-	.tags a.plus {
-		background-color: #f0f0f0;
-		border: 1px solid #f0f0f0;
-	}
-	
-	.tags a.plus:after {
-		content: '';
-	}
-	
-	.tags a.plus:hover {
-		color: #000;
 	}
 	</style>
 </head>
@@ -161,19 +252,47 @@
 	<fieldset class="search">
 		<legend>Search and manage my bookmarks</legend>
 		
-		<div class="search-input-block">
-			<input type="text" name="search" id="search_input" value="" size="40" />
-			<button id="search_button">search</button>
-			<button id="add_button">add new bookmark</button>
-			<button id="import_button" disabled=disabled>import bookmarks</button>
+		<div id="popup_menu">
+			<button id="button_add" class="first">add new bookmark</button>
+			<button id="button_import" class="hidden" disabled="disabled">import bookmarks</button>
+			<button id="button_remove_all" class="hidden">remove all bookmarks</button>
+		</div>
+		
+		<div class="search-input-block">		
+			<input type="text" name="search" id="input_search" value="" size="40" />
+			<button id="button_search">search</button>
 		</div>
 		
 		<table id="add">
+			<thead>
+				<tr>
+					<th class="first"></th>
+					<th colspan="2"><span id="add_title">Edit existing bookmark - </span><a href="" id="add_remove">remove</a></th>
+				</tr>
+			</thead>
 			<tbody>
 				<tr>
-					<td>kvak</td>
+					<td class="first"></td>
+					<td class="title">Title:</td>
+					<td class="input"><input type="text" id="add_input_title" size="33" /></td>
+				</tr>
+				<tr>
+					<td class="first"></td>
+					<td class="title">Url:</td>
+					<td class="input"><input type="text" id="add_input_url" size="33" value="http://" /></td>
+				</tr>
+				<tr>
+					<td class="first"></td>
+					<td class="title">Tags:</td>
+					<td class="input"><input type="text" id="add_input_tags" size="33" />&nbsp;<button>save</button></td>
+				</tr>
+				<tr>
+					<td class="first"></td>
+					<td></td>
+					<td class="add-tags"><a>kvak</a><a>kroch</a><a>mnau</a></td>
 				</tr>
 			</tbody>
+			<tfoot><tr><td></td></tr></tfoot>
 		</table>
 		
 		<table id="results">
@@ -188,29 +307,39 @@
 -->			
 			<tbody>
 				<tr>
-					<td class="title"><span>Google</span></td>
-					<td class="url"><span>http://www.google.com/</span></td>
-					<td class="tags"><a>kvak</a><a>kroch</a><a>mnau</a><a class="plus">+</a></td>
+					<td class="actions"><a href="">✎</a><a href="">✗</a></td>
+					<td class="title">
+						<a href="http://www.google.com/">Google<span title="http://www.google.com/">www.google.com</span></a>
+					</td>
+					<td class="tags"><a>kvak</a><a>kroch</a><a>mnau</a></td>
 				</tr>
 				<tr>
-					<td class="title"><span>bookmarks :: Remember, remember, the velvet November</span></td>
-					<td class="url"><span>http://www.kyberia.sk/</span></td>
-					<td class="tags"><a>flamewar</a><a>facepalm</a><a>jailbait</a><a>alterega</a><a>riesicky</a><a class="plus">+</a></td>
+					<td class="actions"><a href="">✎</a><a href="">✗</a></td>
+					<td class="title">
+						<a href="http://www.kyberia.sk/id/19/">bookmarks :: Remember, remember, the velvet November<span title="http://www.kyberia.sk/id/19/">www.kyberia.sk/id/19/</span></a>
+					</td>
+					<td class="tags"><a>flamewar</a><a>facepalm</a><a>jailbait</a><a>alterega</a><a>riesicky</a></td>
 				</tr>
 				<tr>
-					<td class="title"><span>Freeones</span></td>
-					<td class="url"><span>http://www.freeones.com/</span></td>
-					<td class="tags"><a>porn</a><a>work</a><a class="plus">+</a></td>
+					<td class="actions"><a href="">✎</a><a href="">✗</a></td>
+					<td class="title">
+						<a href="http://www.freeones.com/">Freeones<span title="http://www.freeones.com/">www.freeones.com</span></a>
+					</td>
+					<td class="tags"><a>porn</a><a>work</a></td>
 				</tr>
 				<tr>
-					<td class="title"><span>Stackoverflow</span></td>
-					<td class="url"><span>http://www.stackoverflow.com/some-very-long-url/</span></td>
-					<td class="tags"><a>css</a><a>php</a><a>devel</a><a>html5</a><a>js</a><a class="plus">+</a></td>
+					<td class="actions"><a href="">✎</a><a href="">✗</a></td>
+					<td class="title">
+						<a href="http://www.stackoverflow.com/some-very-long-url/">Stackoverflow<span title="http://www.stackoverflow.com/some-very-long-url/">www.stackoverflow.com/some-very-long-url/</span></a>
+					</td>
+					<td class="tags"><a>css</a><a>php</a><a>devel</a><a>html5</a><a>js</a></td>
 				</tr>
 				<tr>
-					<td class="title"><span>Is it friday?</span></td>
-					<td class="url"><span>http://www.isitfriday.org/</span></td>
-					<td class="tags"><a>friday</a><a>work</a><a class="plus">+</a></td>
+					<td class="actions"><a href="">✎</a><a href="">✗</a></td>
+					<td class="title">
+						<a href="http://www.isitfriday.org/">Is it friday?<span title="http://www.isitfriday.org/">www.isitfriday.org</span></a>
+					</td>
+					<td class="tags"><a>friday</a><a>work</a></td>
 				</tr>
 			</tbody>
 		</table>
