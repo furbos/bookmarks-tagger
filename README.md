@@ -1,4 +1,4 @@
-bookmark-tagger
-===============
+bookmarks-tagger
+================
 
-Gives a tag to your bookmark sites.
+Gives tags to your bookmarks.
