@@ -80,7 +80,7 @@
 	#popup_menu:hover {
 		border: 1px solid #7c4790;
 		border-width: 1px 1px 2px 1px;
-		box-shadow: 0 0 16px -4px #7c4790;
+		box-shadow: 0 0 10px -2px #7c4790;
 	}
 	
 	#popup_menu:hover .hidden {
@@ -126,6 +126,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+		width: 447px;
 	}
 	
 	#results td.actions {
@@ -141,6 +142,7 @@
 	
 	#results td.actions a:hover {
 		color: #7c4790;
+		cursor: pointer;
 	}
 	
 	#results tr:hover td.actions a {
@@ -253,13 +255,13 @@
 		<legend>Search and manage my bookmarks</legend>
 		
 		<div id="popup_menu">
-			<button id="button_add" class="first">add new bookmark</button>
+			<button id="button_add" class="first">add a new bookmark</button>
 			<button id="button_import" class="hidden" disabled="disabled">import bookmarks</button>
 			<button id="button_remove_all" class="hidden">remove all bookmarks</button>
 		</div>
 		
 		<div class="search-input-block">		
-			<input type="text" name="search" id="input_search" value="" size="40" />
+			<input type="text" name="search" placeholder="Search by tags" id="input_search" value="" size="40" autofocus />
 			<button id="button_search">search</button>
 		</div>
 		
@@ -305,7 +307,7 @@
 				</tr>
 			</thead>
 -->			
-			<tbody>
+			<tbody id="results_tbody">
 				<tr>
 					<td class="actions"><a href="">✎</a><a href="">✗</a></td>
 					<td class="title">

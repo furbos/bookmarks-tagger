@@ -24,6 +24,8 @@ function bookmarksTaggerOptions()
 		if (lSearchTerm) {
 			$('input_search').value = lSearchTerm;
 			$('input_search').focus();
+			
+			this.listenerSearchKeyUp(KEY_ENTER);
 		}
 	}
 	
@@ -34,11 +36,11 @@ function bookmarksTaggerOptions()
 	this.addListeners = function()
 	{
 		document.addEventListener('DOMContentLoaded', function () {
-			$('button_search').addEventListener('click', function(aEvent) { mThis.showResults(); });
-			$('button_add').addEventListener('click', function(aEvent) { mThis.showAddBookmark(); });
-			$('button_remove_all').addEventListener('click', function(aEvent) { if (confirm('Are you sure you want to permanently remove all yours tagged bookmarks in Bookmarks Tagger?\n\nYour chrome bookmarks will keep intact.')) { mThis.removeAll(); } });
+			$('button_add').addEventListener('click', function(aEvent) { mThis.showAddEditBookmark(false, false, false); });
+			$('button_remove_all').addEventListener('click', function(aEvent) { if (confirm('Are you sure you want to permanently remove all your tagged bookmarks in Bookmarks Tagger?\n\nYour chrome bookmarks will not be removed.')) { mThis.mBgPage.lBookmarksTaggerBackground.removeAll(); } });
 			
-			$('input_search').addEventListener('keyup', function(aEvent) { mThis.listenerSearchKeyUp(aEvent); });
+			$('button_search').addEventListener('click', function(aEvent) { mThis.listenerSearchKeyUp(KEY_ENTER); });
+			$('input_search').addEventListener('keyup', function(aEvent) { mThis.listenerSearchKeyUp(aEvent.which); });
 			
 			$('add_input_title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
 			$('add_input_url').addEventListener('focus', function(aEvent) { mThis.listenerUrlFocus(aEvent); });
@@ -55,9 +57,9 @@ function bookmarksTaggerOptions()
 	/**
 	 * Listener for search input box for key up event
 	 */
-	this.listenerSearchKeyUp = function(aEvent)
+	this.listenerSearchKeyUp = function(aKeyCode)
 	{
-		switch (aEvent.which) {
+		switch (aKeyCode) {
 			case KEY_TAB:
 				break;
 				
@@ -65,9 +67,95 @@ function bookmarksTaggerOptions()
 				break;
 				
 			case KEY_ENTER:
+			default:
+				this.mBgPage.lBookmarksTaggerBackground.searchByTags($('input_search').value, function(aResults) { mThis.printResults(aResults); });
 				break;
 		}
 	}
+	
+	
+	/**
+	 * Clean results
+	 */
+	this.cleanResults = function()
+	{
+		lResultsTBody = $('results_tbody');
+		
+		while (lResultsTBody.childNodes.length > 0) {
+			lResultsTBody.removeChild(lResultsTBody.firstChild);
+		}
+	}
+	
+	
+	/**
+	 * Show returned results
+	 */
+	this.printResults = function(aResults)
+	{
+		this.cleanResults();
+		lResultsTBody = $('results_tbody');
+		
+		for (var i = 0; i < aResults.length; i++) {
+			var lTr = document.createElement('tr');
+			var lTdActions = document.createElement('td');
+			var lTdTitle = document.createElement('td');
+			var lTdTags = document.createElement('td');
+			var lALink = document.createElement('a');
+			var lSpanLink = document.createElement('span');
+			var lAActionEdit = document.createElement('a');
+			var lAActionRemove = document.createElement('a');
+			
+			lAActionEdit.innerHTML = '✎';
+			lAActionEdit.addEventListener('click', function(aEvent) { mThis.showAddEditBookmark(); });
+			lAActionRemove.innerHTML = '✗';
+			lAActionEdit.addEventListener('click', function(aEvent) { mThis.mBgPage.lBookmarksTaggerBackground.removeBookmark(); });
+			
+			lTdActions.className = 'actions';
+			lTdActions.appendChild(lAActionEdit);
+			lTdActions.appendChild(lAActionRemove);
+			
+			lTdTitle.className = 'title';
+			lALink.href = aResults[i].content;
+			lALink.innerHTML = aResults[i].description;
+			
+			lSpanLink.title = aResults[i].content;
+			lSpanLink.innerHTML = this.cleanUrl(aResults[i].content);
+			lALink.appendChild(lSpanLink);
+			lTdTitle.appendChild(lALink);
+			
+			lTdTags.className = 'tags';
+			for (var j = 0; j < aResults[i].tags.length; j++) {
+				var lTag = document.createElement('a');
+				lTag.innerHTML = aResults[i].tags[j];
+				
+				lTdTags.appendChild(lTag);
+			}
+			
+			
+			lTr.appendChild(lTdActions);
+			lTr.appendChild(lTdTitle);
+			lTr.appendChild(lTdTags);
+			lResultsTBody.appendChild(lTr);
+		}
+		
+		$('add').style.display = 'none';
+		$('results').style.display = 'block';
+	};
+	
+	
+	/**
+	 * Remove protocol and for some cases also trailing slash
+	 */
+	this.cleanUrl = function(aUrl)
+	{
+		aUrl = aUrl.replace(/^https?:\/\//, '');
+		
+		if (aUrl.split('/').length - 1 == 1) {
+			aUrl = aUrl.replace(/\/$/, '');
+		}
+			
+		return aUrl;
+	};
 	
 	
 	/**
@@ -80,7 +168,7 @@ function bookmarksTaggerOptions()
 				$('add_input_url').focus();
 				break;
 		}
-	}
+	};
 	
 	
 	/**
@@ -93,7 +181,7 @@ function bookmarksTaggerOptions()
 				$('add_input_tags').focus();
 				break;
 		}
-	}
+	};
 	
 	
 	/**
@@ -106,7 +194,7 @@ function bookmarksTaggerOptions()
 				// save bookmark and probably close the window
 				break;
 		}
-	}
+	};
 	
 	
 	/**
@@ -122,16 +210,7 @@ function bookmarksTaggerOptions()
 				lInputUrl.setSelectionRange(7, 7);
 			}, 1);
 		}
-	}
-	
-	
-	/**
-	 * Remove all bookmarks
-	 */
-	this.removeAll = function()
-	{
-		//
-	}
+	};
 	
 	
 	/**
@@ -144,32 +223,31 @@ function bookmarksTaggerOptions()
 	
 	
 	/**
-	 * Hide search results and show "add bookmark" form
+	 * Hide search results and show "add a bookmark" form
 	 */
-	this.showAddBookmark = function()
+	this.showAddEditBookmark = function(aUrl, aTitle, aTags)
 	{
+		if (aUrl) {
+			$('add_title').innerHTML = 'Edit an existing bookmark';
+			$('add_remove').style.display = 'block';
+			
+			$('add_input_title').value = aUrl;
+			$('add_input_url').value = aTitle;
+			$('add_input_tags').value = aTags;
+		} else {
+			$('add_title').innerHTML = 'Add a new bookmark';
+			$('add_remove').style.display = 'none';
+			
+			$('add_input_title').value = '';
+			$('add_input_url').value = 'http://';
+			$('add_input_tags').value = '';
+		}
+
 		$('results').hide();
 		$('add').show();
-		
-		$('add_title').innerHTML = 'Add new bookmark';
-		$('add_remove').style.display = 'none';
-		
-		$('add_input_title').value = '';
-		$('add_input_url').value = 'http://';
-		$('add_input_tags').value = '';
-		
+
 		$('add_input_title').focus();
-	}
-	
-	
-	/**
-	 * Hide add bookmark form and show results table
-	 */
-	this.showResults = function()
-	{
-		$('add').style.display = 'none';
-		$('results').style.display = 'block';
-	}
+	};
 }
 
 
