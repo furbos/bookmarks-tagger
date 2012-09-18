@@ -27,6 +27,21 @@ var inArray = function(aNeedle, aHaystack)
 };
 
 
+/** 
+ * Remove all doubles (and empty strings) from the array
+ */
+var uniqueArray = function(aArray)
+{   
+	var lUniqueArray = []; 
+
+	for (var i in aArray) {
+		if (!inArray(aArray[i], lUniqueArray) && aArray[i].replace(/^\s+/, '').replace(/\s+$/, '') != '') lUniqueArray.push(aArray[i]);
+	}   
+    
+	return lUniqueArray;
+};  
+
+
 /**
  * Some useful methods for html elements
  */

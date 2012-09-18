@@ -272,21 +272,6 @@ var bookmarksTaggerBackground = function()
 		
 		return true;
 	};
-
-	
-	/**
-	 * Remove all doubles (and empty strings) from the array
-	 */
-	this.uniqueArray = function(aArray)
-	{
-		var lUniqueArray = [];
-		
-		for (var i in aArray) {
-			if (!inArray(aArray[i], lUniqueArray) && aArray[i].replace(/^\s+/, '').replace(/\s+$/, '') != '') lUniqueArray.push(aArray[i]);
-		}
-		
-		return lUniqueArray;
-	};
 }
 
 

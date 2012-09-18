@@ -71,7 +71,7 @@ function bookmarksTaggerPopup()
 	 */
 	this.listenerTagsKeyUp = function(aEvent)
 	{
-		this.mPageTags = this.mBgPage.lBookmarksTaggerBackground.uniqueArray($('tags').value.split(' '));
+		this.mPageTags = uniqueArray($('tags').value.split(' '));
 		this.createTagsBubbles();
 		
 		switch (aEvent.which) {
@@ -112,7 +112,7 @@ function bookmarksTaggerPopup()
 		lTags.value = lTags.value.replace(lLeftTrim, '').replace(lRightTrim, '').replace(lTag, '');
 		aElement.parentNode.removeChild(aElement);
 		
-		this.mPageTags = this.mBgPage.lBookmarksTaggerBackground.uniqueArray($('tags').value.split(' '));
+		this.mPageTags = uniqueArray($('tags').value.split(' '));
 		
 		this.saveBookmark();
 	};
