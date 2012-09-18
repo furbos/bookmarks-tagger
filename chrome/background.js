@@ -9,28 +9,14 @@ var bookmarksTaggerBackground = function()
 	
 	this.mSuggestions = [];
 	
-	this.mDebugTimer = 0;
-	
-	
+
 	/**
 	 * Initialize
 	 */
 	this.initialize = function()
 	{
-		this.initializeVariables();
 		this.initializeDatabase();
 		this.addListeners();
-	};
-	
-	
-	/**
-	 * Initialize window.* IndexedDB objects
-	 */
-	this.initializeVariables = function()
-	{
-		window.IDBKeyRange    = window.IDBKeyRange ||window.webkitIDBKeyRange;
-		window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction;
-		window.indexedDB      = window.indexedDB || window.webkitIndexedDB;
 	};
 	
 	
@@ -98,7 +84,15 @@ var bookmarksTaggerBackground = function()
 	 */
 	this.listenerOmniboxOnInputChanged = function(aText, aSuggest)
 	{
-		mThis.mDebugTimer = new Date().getTime();
+		mThis.searchByTags(aText, aSuggest);
+	};
+	
+	
+	/**
+	 * Searching bookmarks by tags
+	 */
+	this.searchByTags = function(aText, aCallback)
+	{
 		var lUserInputTags = aText.replace(/^\s+/, '').replace(/(\s{2,}|\s+$)/, ' ').replace(/\s+$/, ' ').split(' ');
 		var lSearchTagRequest = window.indexedDB.open(mThis.mDatabaseName);
 		var lFilterTags  = [];
@@ -113,14 +107,14 @@ var bookmarksTaggerBackground = function()
 			
 			if (lUserInputTags.length == 1 && lUserInputTags[0].length > 0) {
 
-				var rangeTagSearch = IDBKeyRange.bound(lUserInputTags[0], lUserInputTags[0] + '\uffff');
+				var rangeTagSearch = window.IDBKeyRange.bound(lUserInputTags[0], lUserInputTags[0] + '\uffff');
 				lIndexOpenCursor = lIndex.openCursor(rangeTagSearch);
 
 			} else if (lUserInputTags.length > 1) {
 				lLastIndex = lUserInputTags.length - 1;
 				
 				if (lUserInputTags[lLastIndex].length > 0) {
-					var rangeTagSearch = IDBKeyRange.bound(lUserInputTags[lLastIndex], lUserInputTags[lLastIndex] + '\uffff');
+					var rangeTagSearch = window.IDBKeyRange.bound(lUserInputTags[lLastIndex], lUserInputTags[lLastIndex] + '\uffff');
 					lIndexOpenCursor = lIndex.openCursor(rangeTagSearch);
 					
 					lFilterTags = lUserInputTags.slice(0, lLastIndex);
@@ -144,7 +138,7 @@ var bookmarksTaggerBackground = function()
 					mThis.mSuggestions.push(lCursor.value);
 					lCursor.continue();
 				} else {
-					mThis.filterTags(lFilterTags, aSuggest);
+					mThis.filterTags(lFilterTags, aCallback);
 				}
 			}
 		}
@@ -195,13 +189,20 @@ var bookmarksTaggerBackground = function()
 			if (this.mSuggestions[i]) {
 				lSuggestions.push({ 
 					content: this.mSuggestions[i].url,
-					description: this.mSuggestions[i].title 
+					description: this.mSuggestions[i].title,
+					tags: this.mSuggestions[i].tags
 				});
 			}
 		}
 
-		var lDebugTimer = new Date().getTime() - this.mDebugTimer;
-		chrome.omnibox.setDefaultSuggestion({ description: 'Searching took ' + lDebugTimer + 'ms' });
+		if (lSuggestions.length == 1) {
+			lDefaultDescription = 'Go directly to the "' + lSuggestions[0].description + '"';
+		} else {
+			lDefaultDescription = 'Show results for the tags.';
+			console.log(chrome.omnibox);
+		}
+		
+		chrome.omnibox.setDefaultSuggestion({ description: lDefaultDescription });
 		aSuggestCallback(lSuggestions);
 	};
 	
@@ -271,6 +272,34 @@ var bookmarksTaggerBackground = function()
 		}
 		
 		return true;
+	};
+	
+	
+	/**
+	 * Remove all entries
+	 */
+	this.removeAll = function()
+	{
+		var lRemoveAllRequest = window.indexedDB.open(mThis.mDatabaseName);
+		lRemoveAllRequest.onsuccess = function(aEvent)
+		{
+			var lDb = aEvent.target.result;
+			var lTransaction = lDb.transaction([mThis.mDatabaseBookmarks], 'readwrite');
+			var lObjectStore = lTransaction.objectStore(mThis.mDatabaseBookmarks);
+			
+			var lKeyRange = window.IDBKeyRange.lowerBound(0);
+			var lRequest = lObjectStore.openCursor(lKeyRange);
+			
+			lRequest.onsuccess = function(aEvent)
+			{
+				var lResult = aEvent.target.result;
+				
+				if (lResult) {
+					lResult.delete();
+					lResult.continue();
+				}
+			}
+		}
 	};
 }
 
