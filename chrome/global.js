@@ -7,6 +7,14 @@ var KEY_ESCAPE = 27;
 
 
 /**
+ * Set IndexedDB
+ */
+window.IDBKeyRange    = window.IDBKeyRange || window.webkitIDBKeyRange;
+window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction;
+window.indexedDB      = window.indexedDB || window.webkitIndexedDB;
+
+
+/**
  * document.getElementById shortener
  */
 var $ = function(aElementId) {
