@@ -2,7 +2,7 @@
 	"name": "Bookmarks Tagger",
 	"version": "1.0",
 	"manifest_version": 2,
-	"description": "Gives a tag to your bookmarks",
+	"description": "Gives tags to your bookmarks",
 
 	"icons": {
 		"16": "icon.png"
