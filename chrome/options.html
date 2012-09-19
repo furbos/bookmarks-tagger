@@ -64,6 +64,7 @@
 		background-image: none;;
 		background-position: right;
 		background-repeat: no-repeat;
+		width: 270px;
 	}
 	
 	p.small {
@@ -77,13 +78,13 @@
 		border: 1px solid #fbf7fd;
 		padding: 8px;
 		position: absolute;
-		width: 145px;
+		width: 80px;
 		right: 10px;
 	}
 	
 	#popup_menu button {
 		float: left;
-		width: 145px;
+		width: 80px;
 		text-align: center;
 	}
 	
@@ -269,10 +270,30 @@
 
 	#tag-suggestion {
 		position: absolute;
-		background-color: #fff;
-		border: 1px solid #000;
+		border: 1px solid #7ea0cd;
+		color: #7c4790;
+		width: 278px;
+		list-style: none;
+		margin: 0;
 		padding: 0;
-		line-height: 14px;
+		box-shadow: 0 0 6px #7ea0cd;
+		display: none;
+	}
+	
+	#tag-suggestion li {
+		background-color: #fff;
+		padding: 4px;
+		line-height: 12px;
+		cursor: default;
+	}
+	
+	#tag-suggestion li:hover {
+		background-color: #fbf7fd;
+	}
+	
+	#tag-suggestion li.selected {
+		background-color: #7ea0cd;
+		color: #fff;
 	}
 	</style>
 </head>
@@ -287,13 +308,21 @@
 		<legend>Search and manage my bookmarks</legend>
 		
 		<div id="popup_menu">
-			<button id="button_add" class="first">add a new bookmark</button>
-			<button id="button_import" class="hidden" disabled="disabled">import bookmarks</button>
-			<button id="button_remove_all" class="hidden">remove all bookmarks</button>
+			<button id="button_add" class="first">add a new</button>
+			<button id="button_import" class="hidden" disabled="disabled">import</button>
+			<button id="button_remove_all" class="hidden">remove all</button>
 		</div>
 		
 		<div class="search-input-block">		
-			<input type="text" name="search" placeholder="Search by tags" id="input_search" value="" size="40" autofocus />
+			<input type="text" name="search" placeholder="Search by tags" id="input_search" value="" autofocus />
+			
+			<ul id="tag-suggestion">
+				<li class="selected">tag1 kvak tes<strong>ting</strong></li>
+				<li>asd asd </li>
+				<li>asd asd </li>
+				<li>asd asd </li>
+			</ul>
+			
 			<button id="button_search">search</button>
 		</div>
 		
