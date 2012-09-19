@@ -94,7 +94,6 @@ var bookmarksTaggerBackground = function()
 	this.searchByTags = function(aText, aCallback)
 	{
 		var lUserInputTags = aText.replace(/^\s+/, '').replace(/(\s{2,}|\s+$)/, ' ').replace(/\s+$/, ' ').split(' ');
-		console.log(lUserInputTags);
 		var lSearchTagRequest = window.indexedDB.open(mThis.mDatabaseName);
 		var lFilterTags  = [];
 		
@@ -115,7 +114,6 @@ var bookmarksTaggerBackground = function()
 				lLastIndex = lUserInputTags.length - 1;
 				
 				if (lUserInputTags[lLastIndex].length > 0) {
-					console.log('if');
 					var rangeTagSearch = window.IDBKeyRange.bound(lUserInputTags[lLastIndex], lUserInputTags[lLastIndex] + '\uffff');
 					lIndexOpenCursor = lIndex.openCursor(rangeTagSearch);
 					
