@@ -125,11 +125,11 @@ var bookmarksTaggerBackground = function()
 				}
 				
 			} else {
-			
+				aCallback([]);
 				return;
 				
 			}
-			
+
 			lIndexOpenCursor.onsuccess = function(e)
 			{
 				var lCursor = e.target.result;
@@ -199,7 +199,6 @@ var bookmarksTaggerBackground = function()
 			lDefaultDescription = 'Go directly to the "' + lSuggestions[0].description + '"';
 		} else {
 			lDefaultDescription = 'Show results for the tags.';
-			console.log(chrome.omnibox);
 		}
 		
 		chrome.omnibox.setDefaultSuggestion({ description: lDefaultDescription });
