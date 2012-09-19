@@ -94,6 +94,7 @@ var bookmarksTaggerBackground = function()
 	this.searchByTags = function(aText, aCallback)
 	{
 		var lUserInputTags = aText.replace(/^\s+/, '').replace(/(\s{2,}|\s+$)/, ' ').replace(/\s+$/, ' ').split(' ');
+		console.log(lUserInputTags);
 		var lSearchTagRequest = window.indexedDB.open(mThis.mDatabaseName);
 		var lFilterTags  = [];
 		
@@ -114,13 +115,15 @@ var bookmarksTaggerBackground = function()
 				lLastIndex = lUserInputTags.length - 1;
 				
 				if (lUserInputTags[lLastIndex].length > 0) {
+					console.log('if');
 					var rangeTagSearch = window.IDBKeyRange.bound(lUserInputTags[lLastIndex], lUserInputTags[lLastIndex] + '\uffff');
 					lIndexOpenCursor = lIndex.openCursor(rangeTagSearch);
 					
 					lFilterTags = lUserInputTags.slice(0, lLastIndex);
-					
 				} else {
-					lIndexOpenCursor = lIndex.get(lUserInputTags[lLastIndex - 1]);
+					var rangeTagSearch = window.IDBKeyRange.bound(lUserInputTags[lLastIndex - 1], lUserInputTags[lLastIndex - 1]);
+					lIndexOpenCursor = lIndex.openCursor(rangeTagSearch);
+					
 					lFilterTags = lUserInputTags.slice(0, lLastIndex - 1);
 				}
 				
@@ -298,6 +301,22 @@ var bookmarksTaggerBackground = function()
 					lResult.continue();
 				}
 			}
+		}
+	};
+	
+	
+	/**
+	 * Remove a bookmark by url
+	 */
+	this.remove = function(aUrl)
+	{
+		var lRemoveRequest = window.indexedDB.open(mThis.mDatabaseName);
+		lRemoveRequest.onsuccess = function(aEvent)
+		{
+			var lDb = aEvent.target.result;
+			var lTransaction = lDb.transaction([mThis.mDatabaseBookmarks], 'readwrite');
+			var lObjectStore = lTransaction.objectStore(mThis.mDatabaseBookmarks);
+			lObjectStore.delete(aUrl);
 		}
 	};
 }
