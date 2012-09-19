@@ -1,7 +1,8 @@
 function bookmarksTaggerOptions()
 {
 	var mThis = this;
-	
+
+	this.mTagSuggestionDiv;
 	this.mBgPage;
 
 	
@@ -46,12 +47,30 @@ function bookmarksTaggerOptions()
 			$('add_input_url').addEventListener('focus', function(aEvent) { mThis.listenerUrlFocus(aEvent); });
 			$('add_input_url').addEventListener('keyup', function(aEvent) { mThis.listenerUrlKeyUp(aEvent); });
 			$('add_input_tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
-			
+
+			mThis.initializeTagSuggestionDiv();
 			mThis.mBgPage = chrome.extension.getBackgroundPage();
 			mThis.loadOptions();
 			mThis.initializeSearchTerm();
 		});
 	};
+
+
+	/**
+	 * Creates div element used as tag suggestion box beneath search box
+	 */
+	this.initializeTagSuggestionDiv = function()
+	{
+		this.mTagSuggestionDiv = document.createElement('div');
+		this.mTagSuggestionDiv.id = 'tag-suggestion';
+
+		lSearchPosition = getElementPosition($('input_search'));
+
+		this.mTagSuggestionDiv.style.top = (lSearchPosition.top + 4) + 'px';
+		this.mTagSuggestionDiv.style.left = (lSearchPosition.left + 5) + 'px';
+
+		document.body.appendChild(this.mTagSuggestionDiv);
+	}
 	
 	
 	/**
@@ -68,12 +87,28 @@ function bookmarksTaggerOptions()
 				
 			case KEY_ENTER:
 			default:
-				this.searchByTags($('input_search').value);
+				lInputSearchValue = $('input_search').value;
+
+				this.showTagSuggestion();
+				this.searchByTags(lInputSearchValue);
 				break;
 		}
 	};
 
 
+	/**
+	 * Adds an omnibox with tags suggestions while typing in search box
+	 */
+	this.showTagSuggestion = function()
+	{
+		aInputBox = $('input_search');
+		aSuggestion = 'kvak';
+		aCursorPosition = aInputBox.selectionStart;
+
+		this.mTagSuggestionDiv.innerHTML = aSuggestion;
+	};
+
+	
 	/**
 	 * Search by tags will show ajax loader and execute searchByTags function from background page
 	 */
