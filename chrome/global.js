@@ -47,7 +47,26 @@ var uniqueArray = function(aArray)
 	}   
     
 	return lUniqueArray;
-};  
+};
+
+
+/**
+ * Gets an element position (left and top)
+ */
+var getElementPosition = function(aElement)
+{
+	var lX = 0;
+	var lY = 0;
+
+	while (aElement && !isNaN(aElement.offsetLeft) && !isNaN(aElement.offsetTop)) {
+		lX += aElement.offsetLeft - aElement.scrollLeft;
+		lY += aElement.offsetTop - aElement.scrollTop;
+
+		aElement = aElement.parentNode;
+	}
+
+	return { left: lX, top: lY };
+};
 
 
 /**
