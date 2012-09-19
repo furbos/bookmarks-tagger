@@ -11,13 +11,31 @@
 		margin: 0;
 		padding: 8px;
 	}
+
+	input {
+        border: 1px solid #7ea0cd;
+        font-size: 100%;
+        padding: 4px;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #7c4790;
+        box-shadow: 0 0 6px #7ea0cd;
+    }
+
+	strong {
+		color: #7c4790;
+	}
 	
 	a {
-		cursor: pointer;
+		cursor: pointer
 	}
 	
 	a#remove {
 		text-decoration: underline;
+		font-weight: bold;
+		color: #7c4790;
 	}
 	
 	div#tags-bubbles {
@@ -47,9 +65,9 @@
 	</style>
 </head>
 <body>
-	<div style="float: right;"><a id="remove">Remove</a></div>
-	Title:&nbsp;<input type="text" size="30" name="title" id="title" tabindex="2" /><br>
-	Tags:&nbsp;<input type="text" size="27" name="tags" id="tags" tabindex="1" />&nbsp;⏎<br>
+	<div style="float: right;"><a id="remove">Remove bookmark</a></div>
+	<strong>Title:</strong>&nbsp;<input type="text" size="30" name="title" id="title" tabindex="2" /><br>
+	<strong>Tags:</strong>&nbsp;<input type="text" size="27" name="tags" id="tags" tabindex="1" />&nbsp;⏎<br>
 	<div id="tags-bubbles">
 	</div>
 </body>
