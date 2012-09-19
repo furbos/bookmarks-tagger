@@ -130,7 +130,6 @@ function bookmarksTaggerPopup()
 
 			chrome.extension.sendMessage({ getPageInfo: mThis.mPageUrl }, function(aResponse)
 			{
-				console.log(aResponse);
 				if (aResponse.status == 'ok') {
 					mThis.mPageTitle = aResponse.title;
 					mThis.mPageTags  = aResponse.tags;
