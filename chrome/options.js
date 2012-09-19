@@ -26,9 +26,27 @@ function bookmarksTaggerOptions()
 			$('input_search').value = lSearchTerm;
 			$('input_search').focus();
 			
-			this.searchByTags($('input_search').value);
+			this.searchByTags($('input_search').value, this.checkForRedirect);
 		}
 	};
+
+
+	/**
+	 * When user is comming from the omnibox and there is only one results we want him to redirect to that page
+	 */
+	this.checkForRedirect = function(aResults)
+	{
+		if (aResults.length == 1) {
+			chrome.tabs.getSelected(null, 
+				function(aSelectedTab)
+				{
+					chrome.tabs.update(aSelectedTab.id, { url: aResults[0].content });
+				}
+			);
+		} else {
+			mThis.printResults(aResults);
+		}
+	}
 	
 	
 	/**
@@ -37,10 +55,13 @@ function bookmarksTaggerOptions()
 	this.addListeners = function()
 	{
 		document.addEventListener('DOMContentLoaded', function () {
+			mThis.mBgPage = chrome.extension.getBackgroundPage();
+			mThis.initializeSearchTerm();			
+
 			$('button_add').addEventListener('click', function(aEvent) { mThis.showAddEditBookmark(false, false, false); });
 			$('button_remove_all').addEventListener('click', function(aEvent) { if (confirm('Are you sure you want to permanently remove all your tagged bookmarks in Bookmarks Tagger?\n\nYour chrome bookmarks will not be removed.')) { mThis.mBgPage.lBookmarksTaggerBackground.removeAll(); } });
 			
-			$('button_search').addEventListener('click', function(aEvent) { mThis.searchByTags($('input_search').value); });
+			$('button_search').addEventListener('click', function(aEvent) { mThis.searchByTags($('input_search').value, this.printResults); });
 			$('input_search').addEventListener('keyup', function(aEvent) { mThis.listenerSearchKeyUp(aEvent.which); });
 			
 			$('add_input_title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
@@ -49,9 +70,7 @@ function bookmarksTaggerOptions()
 			$('add_input_tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
 
 			mThis.initializeTagSuggestionDiv();
-			mThis.mBgPage = chrome.extension.getBackgroundPage();
 			mThis.loadOptions();
-			mThis.initializeSearchTerm();
 		});
 	};
 
@@ -90,7 +109,7 @@ function bookmarksTaggerOptions()
 				lInputSearchValue = $('input_search').value;
 
 				this.showTagSuggestion();
-				this.searchByTags(lInputSearchValue);
+				this.searchByTags(lInputSearchValue, this.printResults);
 				break;
 		}
 	};
@@ -115,7 +134,7 @@ function bookmarksTaggerOptions()
 	this.searchByTags = function(aTags, aCallback)
 	{
 		$('input_search').style.backgroundImage = 'url("loading.gif")';
-		this.mBgPage.lBookmarksTaggerBackground.searchByTags(aTags, function(aResults) { mThis.printResults(aResults); });
+		this.mBgPage.lBookmarksTaggerBackground.searchByTags(aTags, function(aResults) { aCallback(aResults); });
 	};
 
 	
@@ -137,7 +156,7 @@ function bookmarksTaggerOptions()
 	 */
 	this.printResults = function(aResults)
 	{
-		this.cleanResults();
+		mThis.cleanResults();
 		lResultsTBody = $('results_tbody');
 
 		if (aResults.length == 0) {
@@ -174,7 +193,7 @@ function bookmarksTaggerOptions()
 				lALink.innerHTML = aResults[i].description;
 			
 				lSpanLink.title = aResults[i].content;
-				lSpanLink.innerHTML = this.cleanUrl(aResults[i].content);
+				lSpanLink.innerHTML = mThis.cleanUrl(aResults[i].content);
 				lALink.appendChild(lSpanLink);
 				lTdTitle.appendChild(lALink);
 			
