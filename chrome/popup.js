@@ -41,6 +41,7 @@ function bookmarksTaggerPopup()
 			$('tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
 			$('title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
 			$('remove').addEventListener('click', function(aEvent) { mThis.removeBookmark(); window.close(); });
+			$('save').addEventListener('click', function(aEvent) { mThis.saveBookmark(); window.close(); });
 		});
 	};
 	
@@ -92,7 +93,6 @@ function bookmarksTaggerPopup()
 		
 		switch (aEvent.which) {
 			case KEY_ENTER:
-				this.saveBookmark();
 				$('tags').focus();
 				break;
 		}
@@ -113,8 +113,6 @@ function bookmarksTaggerPopup()
 		aElement.parentNode.removeChild(aElement);
 		
 		this.mPageTags = uniqueArray($('tags').value.split(' '));
-		
-		this.saveBookmark();
 	};
 	
 	
@@ -157,6 +155,7 @@ function bookmarksTaggerPopup()
 			{
 				if (aResponse.status == 'ok') {
 					// do something
+					$('remove').style.display = 'block';
 				}
 			});
 		}
