@@ -78,10 +78,10 @@ var getElementPosition = function(aElement)
  */
 HTMLElement.prototype.toggle = function() {
 	if (this.style) {
-		if (this.style.display == 'block') {
-			this.style.display = 'none';
+		if (this.style.display == 'none') {
+			this.prototype.show();
 		} else {
-			this.style.display = 'block';
+			this.prototype.hide();
 		}
 	}
 };

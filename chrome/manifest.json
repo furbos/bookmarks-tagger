@@ -2,15 +2,15 @@
 	"name": "Bookmarks Tagger",
 	"version": "1.0",
 	"manifest_version": 2,
-	"description": "Gives tags to your bookmarks",
+	"description": "Gives tags to your bookmarks.",
 
 	"icons": {
-		"16": "icon.png"
+		"16" : "icon16.png"
 	},
 
 	"browser_action": {
-		"default_icon": "icon.png",
-		"default_title": "Bookmark Tagger",
+		"default_icon" : "icon16.png",
+		"default_title": "Bookmarks Tagger",
 		"default_popup": "popup.html"
 	},
 

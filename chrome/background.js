@@ -2,10 +2,10 @@ var bookmarksTaggerBackground = function()
 {
 	var mThis = this;
 	
-	this.mDatabaseVersion   = '1.0';
-	this.mDatabaseName      = 'bookmarks-tagger';
-	this.mDatabaseBookmarks = 'bookmarks';
-	this.mDatabaseTags      = 'tags';
+	this.mDatabaseVersion = '1.0';
+	this.mDatabaseName    = 'bookmarks-tagger';
+	this.mStoreBookmarks  = 'bookmarks';
+	this.mIndexTags       = 'tags';
 	
 	this.mSuggestions = [];
 	
@@ -25,10 +25,8 @@ var bookmarksTaggerBackground = function()
 	 */
 	this.initializeDatabase = function()
 	{
-		//var lDeleteRequest = window.indexedDB.deleteDatabase('bookmarks-tagger');
-
-		var lOpenRequest = window.indexedDB.open(this.mDatabaseName);
-		lOpenRequest.onsuccess = function(aEvent)
+		var lOpenDb = window.indexedDB.open(this.mDatabaseName);
+		lOpenDb.onsuccess = function(aEvent)
 		{
 			lDb = aEvent.target.result;
 
@@ -36,30 +34,8 @@ var bookmarksTaggerBackground = function()
 				lSetVersionRequest = lDb.setVersion(mThis.mDatabaseVersion);
 				lSetVersionRequest.onsuccess = function(lEvent)
 				{
-					var lObjectStore = lDb.createObjectStore(mThis.mDatabaseBookmarks, { keyPath: 'url' });
-					lObjectStore.createIndex('tags', 'tags', { unique: false, multiEntry: true });
-					
-					/*var lExamples = [ 
-						{ 
-							title: 'tag 1-2-3-4', 
-							url: 'http://www.example.com/', 
-							tags: [ 'tag1', 'tag2', 'tag3', 'tag4' ] 
-						},
-						{ 
-							title: 'tag 1-2-3-5', 
-							url: 'http://www.example.org/', 
-							tags: [ 'tag1', 'tag2', 'tag3', 'tag5' ] 
-						},
-						{
-							title: 'tag 1-2-4-6-s',
-							url: 'https://www.google.com/',
-							tags: [ 'tag1', 'tag2', 'tag4', 'tag6', 'supertag' ]
-						}
-					];
-					
-					for (var i in lExamples) {
-						lObjectStore.add(lExamples[i]);
-					}*/
+					var lObjectStore = lDb.createObjectStore(mThis.mStoreBookmarks, { keyPath: 'url' });
+					lObjectStore.createIndex(mThis.mIndexTags, mThis.mIndexTags, { unique: false, multiEntry: true });
 				};
 			}
 		}
@@ -67,12 +43,11 @@ var bookmarksTaggerBackground = function()
 	
 	
 	/**
-	 * Add event listeners for omnibox
+	 * Add event listeners
 	 */
 	this.addListeners = function()
 	{
 		chrome.omnibox.onInputChanged.addListener(this.listenerOmniboxOnInputChanged);
-		chrome.omnibox.onInputStarted.addListener(this.listenerOmniboxOnInputStarted);
 		chrome.omnibox.onInputEntered.addListener(this.listenerOmniboxOnInputEntered);
 		
 		chrome.extension.onMessage.addListener(this.listenerExtensionOnMessage);
@@ -89,20 +64,29 @@ var bookmarksTaggerBackground = function()
 	
 	
 	/**
+	 * Create tags from a string
+	 */
+	this.textToTags = function(aText)
+	{
+		return aText.replace(/^\s+/, '').replace(/(\s{2,}|\s+$)/, ' ').replace(/\s+$/, ' ').split(' ');
+	}
+	
+	
+	/**
 	 * Searching bookmarks by tags
 	 */
 	this.searchByTags = function(aText, aCallback)
 	{
-		var lUserInputTags = aText.replace(/^\s+/, '').replace(/(\s{2,}|\s+$)/, ' ').replace(/\s+$/, ' ').split(' ');
-		var lSearchTagRequest = window.indexedDB.open(mThis.mDatabaseName);
+		var lUserInputTags = this.textToTags(aText);
 		var lFilterTags  = [];
+		var lSearchTagRequest = window.indexedDB.open(mThis.mDatabaseName);
 		
 		lSearchTagRequest.onsuccess = function(aEvent)
 		{
 			var lDb            = aEvent.target.result;
-			var lTransaction   = lDb.transaction([mThis.mDatabaseBookmarks], 'readonly');
-			var lObjectStore   = lTransaction.objectStore(mThis.mDatabaseBookmarks);
-			var lIndex         = lObjectStore.index(mThis.mDatabaseTags);
+			var lTransaction   = lDb.transaction([mThis.mStoreBookmarks], 'readonly');
+			var lObjectStore   = lTransaction.objectStore(mThis.mStoreBookmarks);
+			var lIndex         = lObjectStore.index(mThis.mIndexTags);
 			mThis.mSuggestions = [];
 			
 			if (lUserInputTags.length == 1 && lUserInputTags[0].length > 0) {
@@ -128,7 +112,6 @@ var bookmarksTaggerBackground = function()
 			} else {
 				aCallback([]);
 				return;
-				
 			}
 
 			lIndexOpenCursor.onsuccess = function(e)
@@ -143,15 +126,6 @@ var bookmarksTaggerBackground = function()
 				}
 			}
 		}
-	};
-	
-	
-	/**
-	 * Omnibox listener to be called when user types keyword
-	 */
-	this.listenerOmniboxOnInputStarted = function()
-	{
-	
 	};
 	
 	
@@ -177,7 +151,7 @@ var bookmarksTaggerBackground = function()
 	/**
 	 * Filter sites which doesn't contain all tags
 	 */
-	this.filterTags = function(aTags, aSuggestCallback)
+	this.filterTags = function(aTags, aSuggestionCallback)
 	{
 		var lSuggestions = [];
 		
@@ -203,7 +177,7 @@ var bookmarksTaggerBackground = function()
 		}
 		
 		chrome.omnibox.setDefaultSuggestion({ description: lDefaultDescription });
-		aSuggestCallback(lSuggestions);
+		aSuggestionCallback(lSuggestions);
 	};
 	
 	
@@ -217,8 +191,8 @@ var bookmarksTaggerBackground = function()
 			lPageInfoRequest.onsuccess = function(aEvent)
 			{
 				var lDb = aEvent.target.result;
-				var lTransaction = lDb.transaction([mThis.mDatabaseBookmarks], 'readonly');
-				var lObjectStore = lTransaction.objectStore(mThis.mDatabaseBookmarks);
+				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readonly');
+				var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 				
 				var lRequest = lObjectStore.get(aRequest.getPageInfo);
 				
@@ -227,7 +201,7 @@ var bookmarksTaggerBackground = function()
 					var lResult = aEvent.target.result;
 					
 					if (lResult) {
-						var lResponse = { status: 'ok', title: lResult.title, tags: lResult.tags };
+						var lResponse = { status: 'ok', title: lResult.title, tags: lResult.tags, url: lResult.url };
 					} else {
 						var lResponse = { status: 'error' };
 					}
@@ -240,8 +214,8 @@ var bookmarksTaggerBackground = function()
 			lRemoveBookmarkRequest.onsuccess = function(aEvent)
 			{
 				var lDb = aEvent.target.result;
-				var lTransaction = lDb.transaction([mThis.mDatabaseBookmarks], 'readwrite');
-				var lObjectStore = lTransaction.objectStore(mThis.mDatabaseBookmarks);
+				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readwrite');
+				var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 				
 				var lRequest = lObjectStore.delete(aRequest.removeBookmark);
 
@@ -255,8 +229,8 @@ var bookmarksTaggerBackground = function()
 			lSaveBookmarkRequest.onsuccess = function(aEvent)
 			{
 				var lDb = aEvent.target.result;
-				var lTransaction = lDb.transaction([mThis.mDatabaseBookmarks], 'readwrite');
-				var lObjectStore = lTransaction.objectStore(mThis.mDatabaseBookmarks);
+				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readwrite');
+				var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 
 				var lRequest = lObjectStore.put({
 					title: aRequest.saveBookmark.title, 
@@ -284,8 +258,8 @@ var bookmarksTaggerBackground = function()
 		lRemoveAllRequest.onsuccess = function(aEvent)
 		{
 			var lDb = aEvent.target.result;
-			var lTransaction = lDb.transaction([mThis.mDatabaseBookmarks], 'readwrite');
-			var lObjectStore = lTransaction.objectStore(mThis.mDatabaseBookmarks);
+			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readwrite');
+			var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 			
 			var lKeyRange = window.IDBKeyRange.lowerBound(0);
 			var lRequest = lObjectStore.openCursor(lKeyRange);
@@ -312,8 +286,8 @@ var bookmarksTaggerBackground = function()
 		lRemoveRequest.onsuccess = function(aEvent)
 		{
 			var lDb = aEvent.target.result;
-			var lTransaction = lDb.transaction([mThis.mDatabaseBookmarks], 'readwrite');
-			var lObjectStore = lTransaction.objectStore(mThis.mDatabaseBookmarks);
+			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readwrite');
+			var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 			lObjectStore.delete(aUrl);
 		}
 	};

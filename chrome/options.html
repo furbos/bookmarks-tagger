@@ -24,6 +24,10 @@
 		box-shadow: 0 0 6px #7ea0cd;
 	}
 	
+	input:disabled {
+		background-color: #f0f0f0;
+	}
+	
 	button, button:disabled:active, button:disabled:hover {
 		box-shadow: inset 0 1px 0 rgba(256, 256, 256, .75);
 		background-color: #c0c0c0;
@@ -63,6 +67,12 @@
 		position: relative;
 	}
 	
+		
+	legend {
+		font-weight: bold;
+		color: #7c4790;
+	}
+		
 	.options {
 		float: left;
 		width: 150px;
@@ -75,13 +85,7 @@
 		padding: 0;
 		background-color: #fbf7fd;
 	}
-	
-	legend {
 		
-		font-weight: bold;
-		color: #7c4790;
-	}
-	
 	.search legend {
 		margin-left: 9px;
 	}
@@ -305,6 +309,8 @@
 		color: blue;
 		float: right;
 	}
+	
+	/* Tag suggestion */
 
 	#tag-suggestion {
 		position: absolute;
@@ -372,18 +378,18 @@
 			<tbody>
 				<tr>
 					<td class="first"></td>
-					<td class="title">Title:</td>
-					<td class="input"><input type="text" id="add_input_title" size="33" /></td>
-				</tr>
-				<tr>
-					<td class="first"></td>
 					<td class="title">Url:</td>
 					<td class="input"><input type="text" id="add_input_url" size="33" value="http://" /></td>
 				</tr>
 				<tr>
 					<td class="first"></td>
+					<td class="title">Title:</td>
+					<td class="input"><input type="text" id="add_input_title" size="33" disabled /></td>
+				</tr>
+				<tr>
+					<td class="first"></td>
 					<td class="title">Tags:</td>
-					<td class="input"><input type="text" id="add_input_tags" size="33" />&nbsp;<button>save</button></td>
+					<td class="input"><input type="text" id="add_input_tags" size="33" disabled /><button>save</button></td>
 				</tr>
 				<tr>
 					<td class="first"></td>
@@ -395,15 +401,6 @@
 		</table>
 		
 		<table id="results">
-<!--
-			<thead>
-				<tr>
-					<th>Title</th>
-					<th>Url</th>
-					<th>Tags</th>
-				</tr>
-			</thead>
--->			
 			<tbody id="results_tbody">
 			</tbody>
 		</table>

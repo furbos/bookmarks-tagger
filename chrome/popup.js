@@ -6,29 +6,14 @@ function bookmarksTaggerPopup()
 	this.mPageUrl   = '';
 	this.mPageTags  = [];
 	
-	this.mBgPage    = false;
-	
-	
+
 	/**
 	 * Initialize
 	 */
 	this.initialize = function()
 	{
-		this.initializeVariables();
-		this.mBgPage = chrome.extension.getBackgroundPage();
 		this.addListeners();
 		this.getPageInfo();
-	};
-	
-	
-	/**
-	 * Initialize window.* IndexedDB objects
-	 */
-	this.initializeVariables = function()
-	{
-		window.IDBKeyRange    = window.IDBKeyRange ||window.webkitIDBKeyRange;
-		window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction;
-		window.indexedDB      = window.indexedDB || window.webkitIndexedDB;
 	};
 	
 	
@@ -40,8 +25,8 @@ function bookmarksTaggerPopup()
 		document.addEventListener('DOMContentLoaded', function () {
 			$('tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
 			$('title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
-			$('remove').addEventListener('click', function(aEvent) { mThis.removeBookmark(); window.close(); });
-			$('save').addEventListener('click', function(aEvent) { mThis.saveBookmark(); window.close(); });
+			$('remove').addEventListener('click', function(aEvent) { mThis.removeBookmark(); });
+			$('save').addEventListener('click', function(aEvent) { mThis.saveBookmark(); });
 		});
 	};
 	
@@ -61,7 +46,7 @@ function bookmarksTaggerPopup()
 		for (var j = 0; j < this.mPageTags.length; j++) {
 			lTag = document.createElement('a');
 			lTag.innerHTML = this.mPageTags[j];
-			lTag.addEventListener('click', function(aEvent) { mThis.listenerAnchorClick(aEvent, this); });
+			lTag.addEventListener('click', function(aEvent) { mThis.listenerTagClick(aEvent, this); });
 			lTagsBubbles.appendChild(lTag);
 		}
 	};
@@ -78,7 +63,6 @@ function bookmarksTaggerPopup()
 		switch (aEvent.which) {
 			case KEY_ENTER:
 				this.saveBookmark();
-				window.close();
 				break;
 		}
 	};
@@ -102,17 +86,16 @@ function bookmarksTaggerPopup()
 	/**
 	 * Anchor listener for removing tags by clicking on them
 	 */
-	this.listenerAnchorClick = function(aEvent, aElement)
+	this.listenerTagClick = function(aEvent, aElement)
 	{
 		lTag = aElement.innerHTML;
 		var lLeftTrim = new RegExp('\\s+' + lTag);
 		var lRightTrim = new RegExp(lTag + '\\s+');
 		
-		lTags = $('tags');
-		lTags.value = lTags.value.replace(lLeftTrim, '').replace(lRightTrim, '').replace(lTag, '');
+		$('tags').value = lTags.value.replace(lLeftTrim, '').replace(lRightTrim, '').replace(lTag, '');
 		aElement.parentNode.removeChild(aElement);
 		
-		this.mPageTags = uniqueArray($('tags').value.split(' '));
+		this.mPageTags = $('tags').value.split(' ');
 	};
 	
 	
@@ -154,8 +137,7 @@ function bookmarksTaggerPopup()
 			chrome.extension.sendMessage({ saveBookmark: { url: this.mPageUrl, title: this.mPageTitle, tags: this.mPageTags }}, function(aResponse)
 			{
 				if (aResponse.status == 'ok') {
-					// do something
-					$('remove').style.display = 'block';
+					window.close();
 				}
 			});
 		}
@@ -170,7 +152,7 @@ function bookmarksTaggerPopup()
 		chrome.extension.sendMessage({ removeBookmark: this.mPageUrl }, function(aResponse)
 		{
 			if (aResponse.status == 'ok') {
-				// do something
+				window.close();
 			}
 		});
 	};
