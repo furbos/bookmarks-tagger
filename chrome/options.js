@@ -71,7 +71,8 @@ function bookmarksTaggerOptions()
 			$('add_input_tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
 
 			mThis.initializeTagSuggestionDiv();
-			mThis.loadOptions();
+//			mThis.loadOptions();
+			mThis.searchByTags('', mThis.printResults);
 		});
 	};
 
@@ -195,11 +196,12 @@ function bookmarksTaggerOptions()
 				lAActionEdit.attributes['data-url'] = aResults[i].content;
 				lAActionEdit.attributes['data-title'] = aResults[i].description;
 				lAActionEdit.attributes['data-tags'] = aResults[i].tags;
+
 				lAActionEdit.addEventListener('click', function(aEvent) { mThis.showAddEditBookmark(this.attributes['data-url'], this.attributes['data-title'], this.attributes['data-tags'].join(' ')); });
 				lAActionRemove.innerHTML = '✗';
 				lAActionRemove.attributes['data-url'] = aResults[i].content;
 				lAActionRemove.attributes['data-title'] = aResults[i].description;
-				lAActionRemove.addEventListener('click', function(aEvent) { if (confirm('Are you sure you want to remove this bookmark?\n\n' + this.attributes['data-title'])) { mThis.removeBookmark(this); }});
+				lAActionRemove.addEventListener('click', function(aEvent) { if (confirm('Are you sure you want to remove this bookmark?\n\n' + this.attributes['data-title'])) { mThis.removeBookmark(this); mThis.searchByTags('', mThis.printResults) }});
 			
 				lTdActions.className = 'actions';
 				lTdActions.appendChild(lAActionEdit);
@@ -337,7 +339,7 @@ function bookmarksTaggerOptions()
 			$('add_title').innerHTML = 'Edit an existing bookmark';
 			$('add_remove').style.display = 'block';
 			
-			$('add_remove').addEventListener('click', function(aEvent) { if (confirm('Are you sure you want to remove this bookmark?\n\n' + aTitle)) { mThis.mBgPage.lBookmarksTaggerBackground.remove(aUrl); mThis.listenerSearchKeyUp(KEY_ENTER); } });
+			$('add_remove').addEventListener('click', function(aEvent) { if (confirm('Are you sure you want to remove this bookmark?\n\n' + aTitle)) { mThis.mBgPage.lBookmarksTaggerBackground.remove(aUrl); mThis.listenerSearchKeyUp(KEY_ENTER); }});
 			
 			$('add_input_title').value = aTitle;
 			$('add_input_url').value = aUrl;

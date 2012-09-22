@@ -13,17 +13,48 @@
 	}
 
 	input {
-	    border: 1px solid #7ea0cd;
-	    font-size: 100%;
-    	padding: 4px; 
+		border: 1px solid #7ea0cd;
+		font-size: 100%;
+		padding: 4px; 
 	}
 
 	input:focus { 
-    	outline: none;
-	    border-color: #7c4790;
-    	box-shadow: 0 0 6px #7ea0cd;
+		outline: none;
+		border-color: #7c4790;
+		box-shadow: 0 0 6px #7ea0cd;
 	}
-
+	
+	button, button:disabled:active, button:disabled:hover {
+		box-shadow: inset 0 1px 0 rgba(256, 256, 256, .75);
+		background-color: #c0c0c0;
+		border-color: #c0c0c0 #959595 #959595 #c0c0c0;
+		border-width: 1px;
+		border-style: solid;
+		color: #000;
+		text-shadow: 0 -1px 0 rgba(255, 255, 255, .5);
+		background-image: linear-gradient(to bottom, #f0f0f0 0, #c0c0c0 100%);
+		background-image: -webkit-linear-gradient(top, #f0f0f0 0, #c0c0c0 100%);
+		outline: 0;
+		font-weight: normal;
+		padding: 4px 8px 4px 8px;
+	}
+	
+	button:hover {
+		box-shadow: 0 0 6px #c0c0c0;
+		background-image: -webkit-linear-gradient(to bottom, #c0c0c0 0, #c0c0c0 100%)
+	}
+	
+	button:active {
+		border-color: #959595 #c0c0c0 #959595 #c0c0c0;
+		box-shadow: inset 0 1px 4px rgba(0, 0, 0, .35), 0 1px 0 #fff;
+		background-image: linear-gradient(to bottom, #c0c0c0 0, #f0f0f0 100%);
+		background-image: -webkit-linear-gradient(top, #c0c0c0 0, #f0f0f0 100%);
+	}
+	
+	button:disabled, button:disabled:hover {
+		color: #a0a0a0;
+	}
+	
 	fieldset {
 		border-width: 1px 1px 2px 1px;
 		border-style: solid;
@@ -267,6 +298,13 @@
 		padding: 1px 2px 1px 2px;
 		float: left;
 	}
+	
+	#add_remove {
+		cursor: pointer;
+		text-decoration: underline;
+		color: blue;
+		float: right;
+	}
 
 	#tag-suggestion {
 		position: absolute;
@@ -317,10 +355,8 @@
 			<input type="text" name="search" placeholder="Search by tags" id="input_search" value="" autofocus />
 			
 			<ul id="tag-suggestion">
-				<li class="selected">tag1 kvak tes<strong>ting</strong></li>
-				<li>asd asd </li>
-				<li>asd asd </li>
-				<li>asd asd </li>
+				<li class="selected">suggest<strong>ion</strong></li>
+				<li>nonselected</li>
 			</ul>
 			
 			<button id="button_search">search</button>
@@ -330,7 +366,7 @@
 			<thead>
 				<tr>
 					<th class="first"></th>
-					<th colspan="2"><span id="add_title">Edit existing bookmark - </span><a href="" id="add_remove">remove</a></th>
+					<th colspan="2"><a id="add_remove">remove</a><span id="add_title">Edit existing bookmark - </span></th>
 				</tr>
 			</thead>
 			<tbody>
