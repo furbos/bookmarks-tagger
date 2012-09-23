@@ -43,13 +43,13 @@ var inArray = function(aNeedle, aHaystack)
  * Remove all doubles (and empty strings) from the array
  */
 var uniqueArray = function(aArray)
-{   
+{
 	var lUniqueArray = []; 
 
 	for (var i in aArray) {
 		if (!inArray(aArray[i], lUniqueArray) && aArray[i].replace(/^\s+/, '').replace(/\s+$/, '') != '') lUniqueArray.push(aArray[i]);
-	}   
-    
+	}
+
 	return lUniqueArray;
 };
 
@@ -76,7 +76,8 @@ var getElementPosition = function(aElement)
 /**
  * Some useful methods for html elements
  */
-HTMLElement.prototype.toggle = function() {
+HTMLElement.prototype.toggle = function() 
+{
 	if (this.style) {
 		if (this.style.display == 'none') {
 			this.prototype.show();
@@ -86,14 +87,37 @@ HTMLElement.prototype.toggle = function() {
 	}
 };
 
-HTMLElement.prototype.hide = function() {
+HTMLElement.prototype.hide = function() 
+{
 	if (this.style) {
 		this.style.display = 'none';
 	}
 };
 
-HTMLElement.prototype.show = function() {
+HTMLElement.prototype.show = function() 
+{
 	if (this.style) {
 		this.style.display = 'block';
+	}
+};
+
+HTMLElement.prototype.addEventListenerOriginal = HTMLElement.prototype.addEventListener;
+HTMLElement.prototype.addEventListener = function(aEvent, aCallback) 
+{
+	if (!this.listeners) {
+		this.listeners = new Array();
+	}
+	
+	this.listeners.push([aEvent, aCallback]);
+	
+	this.addEventListenerOriginal(aEvent, aCallback);
+};
+
+HTMLElement.prototype.removeEventListeners = function() 
+{
+	if (this.listeners) {
+		for (var i = 0; i < this.listeners.length; i++) {
+			this.removeEventListener(this.listeners[i][0], this.listeners[i][1]);
+		}
 	}
 };
