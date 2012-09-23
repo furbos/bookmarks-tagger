@@ -5,11 +5,11 @@
 	"description": "Gives tags to your bookmarks.",
 
 	"icons": {
-		"16" : "icon16.png"
+		"16" : "icon16-off.png"
 	},
 
 	"browser_action": {
-		"default_icon" : "icon16.png",
+		"default_icon" : "icon16-off.png",
 		"default_title": "Bookmarks Tagger",
 		"default_popup": "popup.html"
 	},
