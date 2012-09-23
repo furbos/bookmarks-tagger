@@ -92,10 +92,10 @@ function bookmarksTaggerPopup()
 		var lLeftTrim = new RegExp('\\s+' + lTag);
 		var lRightTrim = new RegExp(lTag + '\\s+');
 		
-		$('tags').value = lTags.value.replace(lLeftTrim, '').replace(lRightTrim, '').replace(lTag, '');
+		$('tags').value = $('tags').value.replace(lLeftTrim, '').replace(lRightTrim, '').replace(lTag, '');
 		aElement.parentNode.removeChild(aElement);
 		
-		this.mPageTags = $('tags').value.split(' ');
+		this.mPageTags = uniqueArray($('tags').value.split(' '));
 	};
 	
 	
@@ -133,14 +133,13 @@ function bookmarksTaggerPopup()
 	 */
 	this.saveBookmark = function()
 	{
-		if (this.mPageTags.length > 0) {
-			chrome.extension.sendMessage({ saveBookmark: { url: this.mPageUrl, title: this.mPageTitle, tags: this.mPageTags }}, function(aResponse)
-			{
-				if (aResponse.status == 'ok') {
-					window.close();
-				}
-			});
-		}
+		chrome.extension.sendMessage({ saveBookmark: { url: this.mPageUrl, title: this.mPageTitle, tags: this.mPageTags }}, function(aResponse)
+		{
+			if (aResponse.status == 'ok') {
+				chrome.browserAction.setIcon({ path: 'icon16-on.png' });
+				window.close();
+			}
+		});
 	};
 	
 	
@@ -152,6 +151,7 @@ function bookmarksTaggerPopup()
 		chrome.extension.sendMessage({ removeBookmark: this.mPageUrl }, function(aResponse)
 		{
 			if (aResponse.status == 'ok') {
+				chrome.browserAction.setIcon({ path: 'icon16-off.png' });
 				window.close();
 			}
 		});

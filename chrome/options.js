@@ -2,7 +2,7 @@ function bookmarksTaggerOptions()
 {
 	var mThis = this;
 
-	this.editExistingUrl = false;
+	this.mEditExistingUrl = false;
 	this.mTagSuggestionDiv;
 	this.mBgPage;
 
@@ -28,7 +28,8 @@ function bookmarksTaggerOptions()
 
 			$('button_add').addEventListener('click', function(aEvent) { mThis.showAddEditBookmark(false, false, false); });
 			$('button_remove_all').addEventListener('click', function(aEvent) { mThis.removeAll(); });
-			$('button_search').addEventListener('click', function(aEvent) { mThis.searchByTags($('input_search').value, mThis.printResults); });
+			$('button_show_all').addEventListener('click', function(aEvent) { mThis.showAll(); });
+			$('button_search').addEventListener('click', function(aEvent) { mThis.listenerSearchKeyUp(KEY_ENTER); });
 
 			$('input_search').addEventListener('keyup', function(aEvent) { mThis.listenerSearchKeyUp(aEvent.which); });
 			$('input_search').addEventListener('blur', function(aEvent) { mThis.mTagSuggestionDiv.hide(); });
@@ -37,6 +38,8 @@ function bookmarksTaggerOptions()
 			$('add_input_url').addEventListener('keyup', function(aEvent) { mThis.listenerUrlKeyUp(aEvent); });
 			$('add_input_title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
 			$('add_input_tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
+			
+			$('add_button_save').addEventListener('click', function(aEvent) { mThis.saveBookmark(); });
 
 			mThis.initializeTagSuggestionDiv();
 			mThis.searchByTags('', mThis.printResults);
@@ -75,7 +78,7 @@ function bookmarksTaggerOptions()
 		} else {
 			mThis.printResults(aResults);
 		}
-	}
+	};
 
 	
 	/**
@@ -96,7 +99,7 @@ function bookmarksTaggerOptions()
 		 * document.body.appendChild(this.mTagSuggestionDiv);
 		 */
 		this.mTagSuggestionDiv = $('tag-suggestion');
-	}
+	};
 
 	
 	/**
@@ -124,11 +127,12 @@ function bookmarksTaggerOptions()
 	
 				if (lInputSearchValue == '') {
 					this.mTagSuggestionDiv.hide();
+					this.showAll(this.printResults);
 				} else {
 					this.showTagSuggestion(lInputSearchValue);
+					this.searchByTags(lInputSearchValue, this.printResults);
 				}
-	
-				this.searchByTags(lInputSearchValue, this.printResults);
+				
 				break;
 		}
 	};
@@ -259,10 +263,10 @@ function bookmarksTaggerOptions()
 			lTr = aElement.parentNode.parentNode;
 			lTr.parentNode.removeChild(lTr);
 
-			this.searchByTags('', mThis.printResults);
+			this.searchByTags($('input_search').value, mThis.printResults);
 			$('input_search').focus();
 		}
-	}
+	};
 
 	
 	/**
@@ -271,7 +275,7 @@ function bookmarksTaggerOptions()
 	this.editBookmark = function(aElement) 
 	{
 
-	}
+	};
 	
 
 	/**
@@ -311,7 +315,56 @@ function bookmarksTaggerOptions()
 			case KEY_ENTER:
 				$('add_input_title').focus();
 				break;
+				
+			default:
+				lPageUrl = $('add_input_url').value;
+				if (!this.mEditExistingUrl) {
+					if (this.urlIsEmpty(lPageUrl)) {
+						this.urlExists(lPageUrl);
+					} else {
+						$('add_input_title').disabled = 'disabled';
+						$('add_input_tags').disabled = 'disabled';
+						$('add_button_save').disabled = 'disabled';
+					}
+				}
+				break;
 		}
+	};
+	
+	
+	/**
+	 * Check if url is already in the DB
+	 */
+	this.urlExists = function(aUrl)
+	{
+		$('add_input_url').style.backgroundImage = 'url("loading.gif")';
+		chrome.extension.sendMessage({ getPageInfo: aUrl }, function(aResponse)
+		{
+			if (aResponse.status == 'ok') {
+				$('infobox').removeEventListeners();
+				$('infobox').addEventListener('click', function(aEvent) { mThis.showAddEditBookmark(aResponse.url, aResponse.title, aResponse.tags.join(' ')); });
+				$('add_input_title').disabled = 'disabled';
+				$('add_input_tags').disabled = 'disabled';
+				$('add_button_save').disabled = 'disabled';
+				$('infobox').show();
+			} else {
+				$('add_input_title').disabled = '';
+				$('add_input_tags').disabled = '';
+				$('add_button_save').disabled = '';
+				$('infobox').hide();
+			}
+			
+			$('add_input_url').style.backgroundImage = 'none';
+		})
+	};
+	
+	
+	/**
+	 * Check if url is not empty
+	 */
+	this.urlIsEmpty = function(aUrl)
+	{
+		return /https?:\/\/.+/.test(aUrl);
 	};
 
 	
@@ -339,6 +392,57 @@ function bookmarksTaggerOptions()
 			setTimeout(function() { lInputUrl.setSelectionRange(7, 7); }, 1);
 		}
 	};
+	
+	
+	/**
+	 * Create tags bubbles
+	 */
+	this.createTagsBubbles = function()
+	{
+		lTagsBubbles         = $('add-tags');
+		lTagsBubblesChildren = document.querySelectorAll('td[id="add-tags"] a');
+		lPageTags            = uniqueArray($('add_input_tags').value.split(' '));
+
+		for (var i = 0; i < lTagsBubblesChildren.length; i++) {
+			lTagsBubblesChildren[i].parentNode.removeChild(lTagsBubblesChildren[i])
+		}
+		
+		for (var j = 0; j < lPageTags.length; j++) {
+			lTag = document.createElement('a');
+			lTag.innerHTML = lPageTags[j];
+			lTag.addEventListener('click', function(aEvent) { mThis.listenerTagClick(aEvent, this); });
+			lTagsBubbles.appendChild(lTag);
+		}
+	};
+	
+	
+	/**
+	 * Anchor listener for removing tags by clicking on them
+	 */
+	this.listenerTagClick = function(aEvent, aElement)
+	{
+		lTag = aElement.innerHTML;
+		var lLeftTrim = new RegExp('\\s+' + lTag);
+		var lRightTrim = new RegExp(lTag + '\\s+');
+		
+		$('add_input_tags').value = $('add_input_tags').value.replace(lLeftTrim, '').replace(lRightTrim, '').replace(lTag, '');
+		aElement.parentNode.removeChild(aElement);
+	};
+	
+	
+	/**
+	 * Input box listener for typing tags
+	 */
+	this.listenerTagsKeyUp = function(aEvent)
+	{
+		this.createTagsBubbles();
+		
+		switch (aEvent.which) {
+			case KEY_ENTER:
+				this.saveBookmark();
+				break;
+		}
+	};
 
 	
 	/**
@@ -346,11 +450,15 @@ function bookmarksTaggerOptions()
 	 */
 	this.showAddEditBookmark = function(aUrl, aTitle, aTags) 
 	{
+		$('add_remove').removeEventListener('click', function() {});
+		$('infobox').hide();
+		
 		if (aUrl) {
-			this.editExistingUrl = aUrl;
+			this.mEditExistingUrl = aUrl;
 			$('add_title').innerHTML = 'Edit an existing bookmark';
 			$('add_remove').style.display = 'block';
 
+			$('add_remove').removeEventListeners();
 			$('add_remove').addEventListener('click', function(aEvent) 
 			{
 				if (confirm('Are you sure you want to remove this bookmark?\n\n' + aTitle)) {
@@ -365,8 +473,14 @@ function bookmarksTaggerOptions()
 			$('add_input_title').disabled = '';
 			$('add_input_tags').value = aTags;
 			$('add_input_tags').disabled = '';
+			$('add_button_save').disabled = '';
+			
+			$('results').hide();
+			$('add').show();
+			
+			$('add_input_tags').focus();
 		} else {
-			this.editExistingUrl = false;
+			this.mEditExistingUrl = false;
 			$('add_title').innerHTML = 'Add a new bookmark';
 			$('add_remove').style.display = 'none';
 
@@ -375,23 +489,69 @@ function bookmarksTaggerOptions()
 			$('add_input_title').disabled = 'disabled';
 			$('add_input_tags').value = '';
 			$('add_input_tags').disabled = 'disabled';
+			$('add_button_save').disabled = 'disabled';
+			
+			$('results').hide();
+			$('add').show();
+			
+			$('add_input_url').focus();
 		}
-
-		$('results').hide();
-		$('add').show();
-
-		$('add_input_url').focus();
+		
+		this.createTagsBubbles();
 	};
 
 	
 	/**
-	 * Show a confirmation message and then send a message to remove all bookmarks
+	 * Show a confirmation message and then remove all
 	 */
 	this.removeAll = function() 
 	{
 		if (confirm('Are you sure you want to permanently remove all your tagged bookmarks in Bookmarks Tagger?\n\nYour chrome bookmarks will not be removed.')) {
 			mThis.mBgPage.lBookmarksTaggerBackground.removeAll();
 		}
+	};
+	
+	
+	/**
+	 * Save bookmark
+	 */
+	this.saveBookmark = function()
+	{
+		lPageUrl   = $('add_input_url').value;
+		lPageTitle = $('add_input_title').value;
+		lPageTags  = uniqueArray($('add_input_tags').value.split(' '));
+		
+		if (this.mEditExistingUrl == lPageUrl || !this.mEditExistingUrl) {
+			chrome.extension.sendMessage({ saveBookmark: { url: lPageUrl, title: lPageTitle, tags: lPageTags }}, function(aResponse)
+			{
+				if (aResponse.status == 'ok') {
+					mThis.searchByTags($('input_search').value, mThis.printResults);
+				}
+			});
+		} else if (this.mEditExistingUrl != lPageUrl) {
+			chrome.extension.sendMessage({ removeBookmark: mThis.mEditExistingUrl }, function(aResponse)
+			{
+				if (aResponse.status == 'ok') {
+					chrome.extension.sendMessage({ saveBookmark: { url: lPageUrl, title: lPageTitle, tags: lPageTags }}, function(aResponse)
+					{
+						if (aResponse.status == 'ok') {
+							mThis.searchByTags($('input_search').value, mThis.printResults);
+						}
+					});
+				}
+			});
+		}
+	}
+	
+	
+	/**
+	 * Show all bookmarks
+	 */
+	this.showAll = function()
+	{
+		$('input_search').value = '';
+		$('input_search').style.backgroundImage = 'url("loading.gif")';
+		this.mBgPage.lBookmarksTaggerBackground.showAll(function(aResults) { mThis.printResults(aResults); });
 	};
 }
 

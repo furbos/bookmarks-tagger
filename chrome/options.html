@@ -72,6 +72,11 @@
 		font-weight: bold;
 		color: #7c4790;
 	}
+	
+	a {
+		text-decoration: underline;
+		cursor: pointer;
+	}
 		
 	.options {
 		float: left;
@@ -260,20 +265,21 @@
 		font-size: 110%;
 	}
 	
-	#add td.add-tags {
+	#add td#add-tags {
 		padding-left: 5px;
 	}
 	
-	#add td.add-tags a {
+	#add td#add-tags a {
 		color: #fff;
 		background-color: #7ea0cd;
 		border: 1px solid #7ea0cd;
 		margin-right: 4px;
 		padding: 1px 2px 1px 2px;
 		cursor: pointer;
+		text-decoration: none;
 	}
 	
-	#add td.add-tags a:after {
+	#add td#add-tags a:after {
 		/* 
 		ballot x 
 		content: '\0000a0☒';
@@ -281,7 +287,7 @@
 		content: '\0000a0✗';
 	}
 	
-	#add td.add-tags a:hover {
+	#add td#add-tags a:hover {
 		background-color: #fff;
 		color: #7ea0cd;
 	}
@@ -339,6 +345,23 @@
 		background-color: #7ea0cd;
 		color: #fff;
 	}
+	
+	#add_input_url {
+		background-image: none;;
+		background-position: right;
+		background-repeat: no-repeat;
+	}
+	
+	#infobox {
+		font-size: smaller;
+		margin-left: 8px;
+		color: red;
+		float: right;
+		position: relative;
+		display: none;
+		top: 5px;
+		line-height: 10px;
+	}
 	</style>
 </head>
 <body>
@@ -353,7 +376,7 @@
 		
 		<div id="popup_menu">
 			<button id="button_add" class="first">add new</button>
-			<button id="button_import" class="hidden" disabled="disabled">import</button>
+			<button id="button_show_all" class="hidden">show all</button>
 			<button id="button_remove_all" class="hidden">remove all</button>
 		</div>
 		
@@ -379,7 +402,7 @@
 				<tr>
 					<td class="first"></td>
 					<td class="title">Url:</td>
-					<td class="input"><input type="text" id="add_input_url" size="33" value="http://" /></td>
+					<td class="input"><input type="text" id="add_input_url" size="33" value="http://" /><span id="infobox">Bookmark already<br>exists. <a id="infobox_edit">Edit it</a>.</span></td>
 				</tr>
 				<tr>
 					<td class="first"></td>
@@ -389,12 +412,12 @@
 				<tr>
 					<td class="first"></td>
 					<td class="title">Tags:</td>
-					<td class="input"><input type="text" id="add_input_tags" size="33" disabled /><button>save</button></td>
+					<td class="input"><input type="text" id="add_input_tags" size="33" disabled /><button id="add_button_save">save</button></td>
 				</tr>
 				<tr>
 					<td class="first"></td>
 					<td></td>
-					<td class="add-tags"><a>kvak</a><a>kroch</a><a>mnau</a></td>
+					<td id="add-tags"></td>
 				</tr>
 			</tbody>
 			<tfoot><tr><td></td></tr></tfoot>

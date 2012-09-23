@@ -69,7 +69,7 @@ var bookmarksTaggerBackground = function()
 	this.textToTags = function(aText)
 	{
 		return aText.replace(/^\s+/, '').replace(/(\s{2,}|\s+$)/, ' ').replace(/\s+$/, ' ').split(' ');
-	}
+	};
 	
 	
 	/**
@@ -289,6 +289,43 @@ var bookmarksTaggerBackground = function()
 			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readwrite');
 			var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 			lObjectStore.delete(aUrl);
+		}
+	};
+	
+	
+	/**
+	 * Show all entries
+	 */
+	this.showAll = function(aCallback)
+	{
+		var lShowAllRequest = window.indexedDB.open(mThis.mDatabaseName);
+		lShowAllRequest.onsuccess = function(aEvent)
+		{
+			mThis.mSuggestions = [];
+			
+			var lDb = aEvent.target.result;
+			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readonly');
+			var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
+			
+			var lKeyRange = window.IDBKeyRange.lowerBound(0);
+			var lRequest = lObjectStore.openCursor(lKeyRange);
+			
+			lRequest.onsuccess = function(aEvent)
+			{
+				var lResult = aEvent.target.result;
+				
+				if (lResult) {
+					mThis.mSuggestions.push({ 
+						content: lResult.value.url,
+						description: lResult.value.title,
+						tags: lResult.value.tags
+					});
+					
+					lResult.continue();
+				} else {
+					aCallback(mThis.mSuggestions);
+				}
+			}
 		}
 	};
 }
