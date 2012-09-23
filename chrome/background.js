@@ -119,6 +119,7 @@ var bookmarksTaggerBackground = function()
 				var lCursor = e.target.result;
 				
 				if (lCursor) {
+					lCursor.value.title = lCursor.value.title.replace('&', '&amp;');
 					mThis.mSuggestions.push(lCursor.value);
 					lCursor.continue();
 				} else {
@@ -233,9 +234,9 @@ var bookmarksTaggerBackground = function()
 				var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 
 				var lRequest = lObjectStore.put({
-					title: aRequest.saveBookmark.title, 
-					url:   aRequest.saveBookmark.url, 
-					tags:  aRequest.saveBookmark.tags 
+					title: aRequest.saveBookmark.title,
+					url  : aRequest.saveBookmark.url, 
+					tags : aRequest.saveBookmark.tags 
 				});
 				
 				lRequest.onsuccess = function(aEvent)
