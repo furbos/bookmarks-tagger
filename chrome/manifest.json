@@ -5,7 +5,8 @@
 	"description": "Gives tags to your bookmarks.",
 
 	"icons": {
-		"16" : "icon16-off.png"
+		"16" : "icon16-off.png",
+		"48" : "icon48.png"
 	},
 
 	"browser_action": {
