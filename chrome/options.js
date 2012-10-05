@@ -40,9 +40,6 @@ function bookmarksTaggerOptions()
 			$('add_input_tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
 			
 			$('add_button_save').addEventListener('click', function(aEvent) { mThis.saveBookmark(); });
-
-			mThis.initializeTagSuggestionDiv();
-			mThis.searchByTags('', mThis.printResults);
 		});
 	};
 	
@@ -59,6 +56,8 @@ function bookmarksTaggerOptions()
 			$('input_search').focus();
 
 			this.searchByTags($('input_search').value, this.checkForRedirect);
+		} else {
+			mThis.showAll();
 		}
 	};
 
