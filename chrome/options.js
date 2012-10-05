@@ -203,18 +203,18 @@ function bookmarksTaggerOptions()
 				var lAActionRemove = document.createElement('a');
 
 				lAActionEdit.innerHTML = '✎';
-				lAActionEdit.attributes['data-url'] = aResults[i].content;
-				lAActionEdit.attributes['data-title'] = aResults[i].description;
-				lAActionEdit.attributes['data-tags'] = aResults[i].tags;
+				lAActionEdit.attribute_url   = aResults[i].content;
+				lAActionEdit.attribute_title = aResults[i].description;
+				lAActionEdit.attribute_tags  = aResults[i].tags;
 
 				lAActionEdit.addEventListener('click', function(aEvent) 
 				{
-					mThis.showAddEditBookmark(this.attributes['data-url'], this.attributes['data-title'], this.attributes['data-tags'].join(' '));
+					mThis.showAddEditBookmark(this.attribute_url, this.attribute_title, this.attribute_tags.join(' '));
 				});
 				
 				lAActionRemove.innerHTML = '✗';
-				lAActionRemove.attributes['data-url'] = aResults[i].content;
-				lAActionRemove.attributes['data-title'] = aResults[i].description;
+				lAActionRemove.attribute_url   = aResults[i].content;
+				lAActionRemove.attribute_title = aResults[i].description;
 				lAActionRemove.addEventListener('click', function(aEvent) { mThis.removeBookmark(this); });
 
 				lTdActions.className = 'actions';
@@ -257,8 +257,8 @@ function bookmarksTaggerOptions()
 	 */
 	this.removeBookmark = function(aElement) 
 	{
-		if (confirm('Are you sure you want to remove this bookmark?\n\n' + aElement.attributes['data-title'])) {
-			this.mBgPage.lBookmarksTaggerBackground.remove(aElement.attributes['data-url']);
+		if (confirm('Are you sure you want to remove this bookmark?\n\n' + aElement.attribute_title)) {
+			this.mBgPage.lBookmarksTaggerBackground.remove(aElement.attribute_url);
 
 			lTr = aElement.parentNode.parentNode;
 			lTr.parentNode.removeChild(lTr);
