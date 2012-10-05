@@ -2,6 +2,7 @@ function bookmarksTaggerOptions()
 {
 	var mThis = this;
 
+	this.mSearching = false;
 	this.mEditExistingUrl = false;
 	this.mTagSuggestionDiv;
 	this.mBgPage;
@@ -155,8 +156,11 @@ function bookmarksTaggerOptions()
 	 */
 	this.searchByTags = function(aTags, aCallback) 
 	{
-		$('input_search').style.backgroundImage = 'url("loading.gif")';
-		this.mBgPage.lBookmarksTaggerBackground.searchByTags(aTags, function(aResults) { aCallback(aResults); });
+		if (!this.mSearching) {
+			this.mSearching = true;
+			$('input_search').style.backgroundImage = 'url("loading.gif")';
+			this.mBgPage.lBookmarksTaggerBackground.searchByTags(aTags, function(aResults) { aCallback(aResults); });
+		}
 	};
 
 	
@@ -248,6 +252,7 @@ function bookmarksTaggerOptions()
 		$('results').show();
 
 		$('input_search').style.backgroundImage = 'none';
+		mThis.mSearching = false;
 	};
 
 	
@@ -548,9 +553,12 @@ function bookmarksTaggerOptions()
 	 */
 	this.showAll = function()
 	{
-		$('input_search').value = '';
-		$('input_search').style.backgroundImage = 'url("loading.gif")';
-		this.mBgPage.lBookmarksTaggerBackground.showAll(function(aResults) { mThis.printResults(aResults); });
+		if (!this.mSearching) {
+			this.mSearching = true;
+			$('input_search').value = '';
+			$('input_search').style.backgroundImage = 'url("loading.gif")';
+			this.mBgPage.lBookmarksTaggerBackground.showAll(function(aResults) { mThis.printResults(aResults); });
+		}
 	};
 }
 
