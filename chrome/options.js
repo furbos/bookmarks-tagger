@@ -4,7 +4,6 @@ function bookmarksTaggerOptions()
 
 	this.mSearching = false;
 	this.mEditExistingUrl = false;
-	this.mTagSuggestionDiv;
 	this.mBgPage;
 
 	
@@ -33,7 +32,6 @@ function bookmarksTaggerOptions()
 			$('button_search').addEventListener('click', function(aEvent) { mThis.listenerSearchKeyUp(KEY_ENTER); });
 
 			$('input_search').addEventListener('keyup', function(aEvent) { mThis.listenerSearchKeyUp(aEvent.which); });
-			$('input_search').addEventListener('blur', function(aEvent) { mThis.mTagSuggestionDiv.hide(); });
 
 			$('add_input_url').addEventListener('focus', function(aEvent) { mThis.listenerUrlFocus(aEvent); });
 			$('add_input_url').addEventListener('keyup', function(aEvent) { mThis.listenerUrlKeyUp(aEvent); });
@@ -82,35 +80,12 @@ function bookmarksTaggerOptions()
 
 	
 	/**
-	 * Creates div element used as tag suggestion box beneath search box
-	 */
-	this.initializeTagSuggestionDiv = function() 
-	{
-		/*
-		 * this.mTagSuggestionDiv = document.createElement('div');
-		 * this.mTagSuggestionDiv.id = 'tag-suggestion';
-		 * 
-		 * lSearchPosition = getElementPosition($('input_search'));
-		 * 
-		 * this.mTagSuggestionDiv.style.top = (lSearchPosition.top + 8) + 'px';
-		 * this.mTagSuggestionDiv.style.left = (lSearchPosition.left + 1) +
-		 * 'px';
-		 * 
-		 * document.body.appendChild(this.mTagSuggestionDiv);
-		 */
-		this.mTagSuggestionDiv = $('tag-suggestion');
-	};
-
-	
-	/**
 	 * Listener for search input box for key up event
 	 */
 	this.listenerSearchKeyUp = function(aKeyCode) 
 	{
 		switch (aKeyCode) {
 			case KEY_ESCAPE:
-				this.mTagSuggestionDiv.hide();
-	
 			case KEY_TAB:
 			case KEY_LEFT:
 			case KEY_RIGHT:
@@ -126,27 +101,13 @@ function bookmarksTaggerOptions()
 				lInputSearchValue = $('input_search').value;
 	
 				if (lInputSearchValue == '') {
-					this.mTagSuggestionDiv.hide();
 					this.showAll(this.printResults);
 				} else {
-					this.showTagSuggestion(lInputSearchValue);
 					this.searchByTags(lInputSearchValue, this.printResults);
 				}
 				
 				break;
 		}
-	};
-
-	
-	/**
-	 * Adds an "omnibox" with tags suggestions while typing in search box
-	 */
-	this.showTagSuggestion = function(aText) 
-	{
-		aSuggestion = lInputSearchValue;
-		aCursorPosition = $('input_search').selectionStart;
-
-		// this.mTagSuggestionDiv.show();
 	};
 
 	
@@ -158,8 +119,13 @@ function bookmarksTaggerOptions()
 	{
 		if (!this.mSearching) {
 			this.mSearching = true;
-			$('input_search').style.backgroundImage = 'url("loading.gif")';
-			this.mBgPage.lBookmarksTaggerBackground.searchByTags(aTags, function(aResults) { aCallback(aResults); });
+			
+			if (!aTags) {
+				mThis.showAll();
+			} else {
+				$('input_search').style.backgroundImage = 'url("loading.gif")';
+				this.mBgPage.lBookmarksTaggerBackground.searchByTags(aTags, function(aResults) { aCallback(aResults); });
+			}
 		}
 	};
 
