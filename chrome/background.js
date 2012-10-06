@@ -8,6 +8,7 @@ var bookmarksTaggerBackground = function()
 	this.mIndexTags       = 'tags';
 	
 	this.mSuggestions = [];
+	this.mUsedTags    = {};
 	
 
 	/**
@@ -325,6 +326,47 @@ var bookmarksTaggerBackground = function()
 					lResult.continue();
 				} else {
 					aCallback(mThis.mSuggestions);
+				}
+			}
+		}
+	};
+	
+	
+	/**
+	 * Get all used tags
+	 */
+	this.getUsedTags = function(aCallback)
+	{
+		var lUsedTagsRequest = window.indexedDB.open(mThis.mDatabaseName);
+		lUsedTagsRequest.onsuccess = function(aEvent)
+		{
+			mThis.mUsedTags = {};
+			
+			var lDb = aEvent.target.result;
+			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readonly');
+			var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
+			
+			var lKeyRange = window.IDBKeyRange.lowerBound(0);
+			var lRequest = lObjectStore.openCursor(lKeyRange);
+			
+			lRequest.onsuccess = function(aEvent)
+			{
+				var lResult = aEvent.target.result;
+
+				if (lResult) {
+					if (lResult.value.tags != []) {
+						for(var i = 0; i < lResult.value.tags.length; i++) {
+							if (mThis.mUsedTags.hasOwnProperty(lResult.value.tags[i])) {
+								mThis.mUsedTags[lResult.value.tags[i]] = mThis.mUsedTags[lResult.value.tags[i]] + 1;
+							} else {
+								mThis.mUsedTags[lResult.value.tags[i]] = 1;
+							}
+						}
+					}
+					
+					lResult.continue();
+				} else {
+					aCallback(mThis.mUsedTags);
 				}
 			}
 		}

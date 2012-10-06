@@ -5,6 +5,8 @@ function bookmarksTaggerOptions()
 	this.mSearching = false;
 	this.mEditExistingUrl = false;
 	this.mBgPage;
+	
+	this.mTagListMaxHeight = 50;
 
 	
 	/**
@@ -25,6 +27,7 @@ function bookmarksTaggerOptions()
 		{
 			mThis.mBgPage = chrome.extension.getBackgroundPage();
 			mThis.initializeSearchTerm();
+			mThis.loadUsedTags();
 
 			$('button_add').addEventListener('click', function(aEvent) { mThis.showAddEditBookmark(false, false, false); });
 			$('button_remove_all').addEventListener('click', function(aEvent) { mThis.removeAll(); });
@@ -59,7 +62,53 @@ function bookmarksTaggerOptions()
 			mThis.showAll();
 		}
 	};
-
+	
+	
+	/**
+	 * Load all tags used in bookmarks
+	 */
+	this.loadUsedTags = function()
+	{
+		lTagList = $('tag-list');
+		
+		while (lTagList.childNodes.length > 0) {
+			lTagList.removeChild(lTagList.firstChild);
+		}
+		
+		this.mBgPage.lBookmarksTaggerBackground.getUsedTags(function(aTags) 
+		{ 
+			var lSortedTags = [];
+			for (var i in aTags) {
+				lSortedTags.push({
+					'tag': i,
+					'usage': aTags[i]
+				});
+			}
+			
+			lSortedTags.sort(function(a, b) { return b.usage - a.usage; });
+			
+			for (var i in lSortedTags) {
+				lTag = document.createElement('a');
+				lTag.addEventListener('click', function(aEvent) { $('input_search').value = this.innerHTML; mThis.searchByTags(this.innerHTML, mThis.printResults); });
+				lTag.innerHTML = lSortedTags[i].tag;
+				
+				lTagList.appendChild(lTag);
+			}
+			
+			lClearBoth = document.createElement('div');
+			lClearBoth.className = 'clear';
+			lTagList.appendChild(lClearBoth);
+			
+			if (lTagList.offsetHeight > mThis.mTagListMaxHeight) {
+				lTagListMore = document.createElement('div');
+				lTagListMore.id = 'tag-list-more';
+				lTagListMore.innerHTML = '↓↓↓';
+				
+				lTagList.appendChild(lTagListMore);
+			}
+		});
+	};
+	
 	
 	/**
 	 * When user is comming from the omnibox and there is only one results we

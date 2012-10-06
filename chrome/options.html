@@ -86,11 +86,56 @@
 		text-decoration: underline;
 		cursor: pointer;
 	}
+	
+	.clear {
+		clear: both;
+	}
 		
-	.options {
+	.left-panel {
 		float: left;
+		width: 190px;
+	}
+	
+	.options {
 		width: 150px;
-		margin-right: 10px;
+	}
+	
+	.tag-list {
+		width: 150px;
+		background-color: #fff;
+		max-height: 150px;
+		overflow: hidden;
+		-webkit-transition: max-height 400ms ease 0;
+	}
+	
+	.tag-list:hover {
+		max-height: 1400px;
+	}
+	
+	.tag-list:hover #tag-list-more {
+		display: none;
+	}
+	
+	#tag-list-more {
+		text-align: center;
+		position: absolute;
+		bottom: 0;
+		width: 150px;
+		background-color: rgba(255, 255, 255, 0.8);
+		color: #000;
+		display: block;
+	}
+
+	#tag-list a {
+		color: #fff;
+		background-color: #7ea0cd;
+		border: 1px solid #7ea0cd;
+		margin: 0 4px 4px 0;
+		padding: 1px 2px 1px 2px;
+		cursor: pointer;
+		text-decoration: none;
+		float: left;
+		line-height: 16px;
 	}
 	
 	.search {
@@ -376,11 +421,18 @@
 	</style>
 </head>
 <body>
-	<fieldset class="options">
-		<legend>Options</legend>
-		Omnibox keyword: <strong>bt</strong><br />
-		<p class="small">Unfortunately there is no possibility to allow users to change the keyword due to chrome extension API limitations. I hope this will change in the future.</p>
-	</fieldset>
+	<div class="left-panel">
+		<fieldset class="options">
+			<legend>Options</legend>
+			Omnibox keyword: <strong>bt</strong><br />
+			<p class="small">Unfortunately there is no possibility to allow users to change the keyword due to chrome extension API limitations. I hope this will change in the future.</p>
+		</fieldset>
+		
+		<fieldset class="tag-list">
+			<legend>Used tags</legend>
+			<div id="tag-list"></div>
+		</fieldset>
+	</div>
 
 	<fieldset class="search">
 		<legend>Search and manage my bookmarks</legend>
