@@ -38,7 +38,7 @@ function bookmarksTaggerOptions()
 			$('add_input_title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
 			$('add_input_tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
 			
-			$('add_button_save').addEventListener('click', function(aEvent) { mThis.saveBookmark(); });
+			$('add_button_save').addEventListener('click', function(aEvent) { mThis.saveBookmarkButton(); });
 		});
 	};
 	
@@ -118,13 +118,12 @@ function bookmarksTaggerOptions()
 	this.searchByTags = function(aTags, aCallback) 
 	{
 		if (!this.mSearching) {
-			this.mSearching = true;
-			
-			if (!aTags) {
-				mThis.showAll();
-			} else {
+			if (aTags) {
+				this.mSearching = true;
 				$('input_search').style.backgroundImage = 'url("loading.gif")';
 				this.mBgPage.lBookmarksTaggerBackground.searchByTags(aTags, function(aResults) { aCallback(aResults); });
+			} else {
+				this.showAll();
 			}
 		}
 	};
@@ -409,7 +408,7 @@ function bookmarksTaggerOptions()
 		
 		switch (aEvent.which) {
 			case KEY_ENTER:
-				this.saveBookmark();
+				this.saveBookmarkButton();
 				break;
 		}
 	};
@@ -483,26 +482,31 @@ function bookmarksTaggerOptions()
 	
 	
 	/**
+	 * Save bookmark button
+	 */
+	this.saveBookmarkButton = function()
+	{
+		this.saveBookmark($('add_input_url').value, $('add_input_title').value, uniqueArray($('add_input_tags').value.split(' ')));
+	};
+	
+	
+	/**
 	 * Save bookmark
 	 */
-	this.saveBookmark = function()
+	this.saveBookmark = function(aPageUrl, aPageTitle, aPageTags)
 	{
-		lPageUrl   = $('add_input_url').value;
-		lPageTitle = $('add_input_title').value;
-		lPageTags  = uniqueArray($('add_input_tags').value.split(' '));
-		
-		if (this.mEditExistingUrl == lPageUrl || !this.mEditExistingUrl) {
-			chrome.extension.sendMessage({ saveBookmark: { url: lPageUrl, title: lPageTitle, tags: lPageTags }}, function(aResponse)
+		if (this.mEditExistingUrl == aPageUrl || !this.mEditExistingUrl) {
+			chrome.extension.sendMessage({ saveBookmark: { url: aPageUrl, title: aPageTitle, tags: aPageTags }}, function(aResponse)
 			{
 				if (aResponse.status == 'ok') {
 					mThis.searchByTags($('input_search').value, mThis.printResults);
 				}
 			});
-		} else if (this.mEditExistingUrl != lPageUrl) {
+		} else if (this.mEditExistingUrl != aPageUrl) {
 			chrome.extension.sendMessage({ removeBookmark: mThis.mEditExistingUrl }, function(aResponse)
 			{
 				if (aResponse.status == 'ok') {
-					chrome.extension.sendMessage({ saveBookmark: { url: lPageUrl, title: lPageTitle, tags: lPageTags }}, function(aResponse)
+					chrome.extension.sendMessage({ saveBookmark: { url: aPageUrl, title: aPageTitle, tags: aPageTags }}, function(aResponse)
 					{
 						if (aResponse.status == 'ok') {
 							mThis.searchByTags($('input_search').value, mThis.printResults);
@@ -511,7 +515,7 @@ function bookmarksTaggerOptions()
 				}
 			});
 		}
-	}
+	};
 	
 	
 	/**
