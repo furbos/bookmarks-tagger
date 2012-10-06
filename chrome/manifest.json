@@ -2,7 +2,7 @@
 	"name": "Bookmarks Tagger",
 	"version": "1.0",
 	"manifest_version": 2,
-	"description": "Find your bookmarks quickly by tagging them.",
+	"description": "Assign tags to your bookmarks and search for them through the address bar.",
 
 	"icons": {
 		"16" : "icon16-on.png",

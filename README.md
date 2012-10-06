@@ -1,4 +1,4 @@
 bookmarks-tagger
 ================
 
-Find your bookmarks quickly by tagging them.
+Assign tags to your bookmarks and search for them through the address bar.
