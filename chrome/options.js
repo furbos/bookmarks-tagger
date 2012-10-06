@@ -251,6 +251,7 @@ function bookmarksTaggerOptions()
 				for (var j = 0; j < aResults[i].tags.length; j++) {
 					var lTag = document.createElement('a');
 					lTag.innerHTML = aResults[i].tags[j];
+					lTag.addEventListener('click', function(aEvent) { $('input_search').value = this.innerHTML; mThis.searchByTags(this.innerHTML, mThis.printResults); });
 
 					lTdTags.appendChild(lTag);
 				}

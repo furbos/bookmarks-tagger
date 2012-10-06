@@ -361,7 +361,6 @@
 		margin: 1px 4px 1px 0;
 		padding: 1px 2px 1px 2px;
 		float: left;
-		cursor: default;
 		text-decoration: none;
 	}
 	
@@ -370,36 +369,6 @@
 		text-decoration: underline;
 		color: blue;
 		float: right;
-	}
-	
-	/* Tag suggestion */
-
-	#tag-suggestion {
-		position: absolute;
-		border: 1px solid #7ea0cd;
-		color: #7c4790;
-		width: 278px;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		box-shadow: 0 0 6px #7ea0cd;
-		display: none;
-	}
-	
-	#tag-suggestion li {
-		background-color: #fff;
-		padding: 4px;
-		line-height: 12px;
-		cursor: default;
-	}
-	
-	#tag-suggestion li:hover {
-		background-color: #fbf7fd;
-	}
-	
-	#tag-suggestion li.selected {
-		background-color: #7ea0cd;
-		color: #fff;
 	}
 	
 	#add_input_url {
@@ -438,19 +407,13 @@
 		<legend>Search and manage my bookmarks</legend>
 		
 		<div id="popup_menu">
-			<button id="button_add" class="first">add new</button>
-			<button id="button_show_all" class="hidden">show all</button>
+			<button id="button_show_all" class="first">show all</button>
+			<button id="button_add" class="hidden">add new</button>
 			<button id="button_remove_all" class="hidden">remove all</button>
 		</div>
 		
 		<div class="search-input-block">		
 			<input type="text" name="search" placeholder="Search by tags" id="input_search" value="" autofocus />
-			
-			<ul id="tag-suggestion">
-				<li class="selected">suggest<strong>ion</strong></li>
-				<li>nonselected</li>
-			</ul>
-			
 			<button id="button_search">search</button>
 		</div>
 		
