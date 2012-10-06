@@ -6,6 +6,13 @@
 	<script src="global.js"></script>
 	<script src="options.js"></script>
 	<style>
+	@font-face {
+		font-family: 'Open Sans';
+		font-style: normal;
+		font-weight: 400;
+		src: local('Open Sans'), local('OpenSans'), url(OpenSans-Normal.woff) format('woff');
+	}
+
 	body {
 		font: 13px/22px 'Open Sans', arial, sans-serif;
 		margin: 0;
@@ -15,7 +22,8 @@
 	input {
 		border: 1px solid #7ea0cd;
 		font-size: 100%;
-		padding: 4px; 
+		padding: 4px;
+		font: 13px/22px 'Open Sans', arial, sans-serif;
 	}
 
 	input:focus { 
@@ -41,6 +49,7 @@
 		outline: 0;
 		font-weight: normal;
 		padding: 4px 8px 4px 8px;
+		font: 13px/22px 'Open Sans', arial, sans-serif;
 	}
 	
 	button:hover {

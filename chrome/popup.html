@@ -6,11 +6,19 @@
 	<script src="global.js"></script>
 	<script src="popup.js"></script>
 	<style>
+	@font-face {
+		font-family: 'Open Sans';
+		font-style: normal;
+		font-weight: 400;
+		src: local('Open Sans'), local('OpenSans'), url(OpenSans-Normal.woff) format('woff');
+	}
+	
 	body {
 		font: 13px/22px 'Open Sans', arial, sans-serif;
 		margin: 0;
 		padding: 8px;
-		width: 200px;
+		width: 210px;
+		font: 13px/22px 'Open Sans', arial, sans-serif;
 	}
 
 	input {
@@ -19,6 +27,7 @@
 		padding: 4px;
 		width: 138px;
 		margin-right: 8px;
+		
 	}
 
 	input:focus {
@@ -39,8 +48,9 @@
 		background-image: -webkit-linear-gradient(top, #f0f0f0 0, #c0c0c0 100%);
 		outline: 0;
 		font-weight: normal;
-		padding: 4px 8px 4px 8px;
+		padding: 2px 8px 2px 8px;
 		margin: 0;
+		font: 13px/22px 'Open Sans', arial, sans-serif;
 	}
 	
 	button:hover {
