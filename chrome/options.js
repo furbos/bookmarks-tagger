@@ -6,7 +6,7 @@ function bookmarksTaggerOptions()
 	this.mEditExistingUrl = false;
 	this.mBgPage;
 	
-	this.mTagListMaxHeight = 50;
+	this.mTagListMaxHeight = 250;
 
 	
 	/**
@@ -32,6 +32,7 @@ function bookmarksTaggerOptions()
 			$('button_add').addEventListener('click', function(aEvent) { mThis.showAddEditBookmark(false, false, false); });
 			$('button_remove_all').addEventListener('click', function(aEvent) { mThis.removeAll(); });
 			$('button_show_all').addEventListener('click', function(aEvent) { mThis.showAll(); });
+			$('button_import').addEventListener('click', function(aEvent) { mThis.importBookmarks(); });
 			$('button_search').addEventListener('click', function(aEvent) { mThis.listenerSearchKeyUp(KEY_ENTER); });
 
 			$('input_search').addEventListener('keyup', function(aEvent) { mThis.listenerSearchKeyUp(aEvent.which); });
@@ -60,6 +61,51 @@ function bookmarksTaggerOptions()
 			this.searchByTags($('input_search').value, this.checkForRedirect);
 		} else {
 			mThis.showAll();
+		}
+	};
+	
+	
+	/**
+	 * Import bookmarks from browser
+	 */
+	this.importBookmarks = function()
+	{
+		if (confirm('Do you want to import all bookmarks from your browser?')) {
+			lBookmarkTree = chrome.bookmarks.getTree(function(aBookmarkTreeNodes)
+			{
+				for (var i = 0; i < aBookmarkTreeNodes.length; i++) {
+					mThis.processBookmarkNode(aBookmarkTreeNodes[i]);
+				}
+			});
+		}
+	};
+	
+	
+	/**
+	 * Process bookmark tree nodes
+	 */
+	this.processBookmarkNodes = function(aNodes)
+	{
+		for (var i = 0; i < aNodes.length; i++) {
+			mThis.processBookmarkNode(aNodes[i]);
+		}
+	};
+	
+	
+	/**
+	 * Process bookmark node
+	 */
+	this.processBookmarkNode = function(aNode)
+	{
+		if (aNode.title && !aNode.children) {
+			chrome.extension.sendMessage({ getPageInfo: aNode.url }, function(aResponse)
+			{
+				if (aResponse.status != 'ok') {
+					mThis.saveBookmark(aNode.url, aNode.title, []);
+				}
+			});
+		} else if (aNode.children && aNode.children.length > 0) {
+			this.processBookmarkNodes(aNode.children);
 		}
 	};
 	
@@ -284,6 +330,8 @@ function bookmarksTaggerOptions()
 
 			this.searchByTags($('input_search').value, mThis.printResults);
 			$('input_search').focus();
+			
+			this.loadUsedTags();
 		}
 	};
 
@@ -526,7 +574,7 @@ function bookmarksTaggerOptions()
 	this.removeAll = function() 
 	{
 		if (confirm('Are you sure you want to permanently remove all your tagged bookmarks in Bookmarks Tagger?\n\nYour chrome bookmarks will not be removed.')) {
-			mThis.mBgPage.lBookmarksTaggerBackground.removeAll();
+			mThis.mBgPage.lBookmarksTaggerBackground.removeAll(function() { mThis.loadUsedTags(); mThis.showAll(); });
 		}
 	};
 	

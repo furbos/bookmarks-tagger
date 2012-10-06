@@ -96,20 +96,27 @@
 		width: 190px;
 	}
 	
-	.options {
+	.left-panel fieldset {
 		width: 150px;
 	}
 	
+	.controls {
+		text-align: center;
+	}
+	
+	.controls button {
+		width: 135px;
+	}
+	
 	.tag-list {
-		width: 150px;
 		background-color: #fff;
-		max-height: 150px;
+		max-height: 250px;
 		overflow: hidden;
 		-webkit-transition: max-height 400ms ease 0;
 	}
 	
 	.tag-list:hover {
-		max-height: 1400px;
+		max-height: 2000px;
 	}
 	
 	.tag-list:hover #tag-list-more {
@@ -121,7 +128,7 @@
 		position: absolute;
 		bottom: 0;
 		width: 150px;
-		background-color: rgba(255, 255, 255, 0.8);
+		background-color: #fff;
 		color: #000;
 		display: block;
 	}
@@ -169,42 +176,30 @@
 
 	#popup_menu {
 		background-color: #fbf7fd;
-		border: 1px solid #fbf7fd;
+		border: 1px solid #7ea0cd;
 		padding: 8px;
 		position: absolute;
-		width: 80px;
-		right: 10px;
+		left: 630px;
+		top: 30px;
+		-webkit-transition: all 200ms;
+	}
+	
+	#popup_menu:hover {
+		left: 917px;
+		-webkit-box-shadow: inset 0 0 6px 1px #7ea0cd;
+		border-color: #fbf7fd;
 	}
 	
 	#popup_menu button {
 		float: left;
-		width: 80px;
 		text-align: center;
 	}
 	
-	#popup_menu .hidden {
-		display: none;
-	}
-	
-	#popup_menu:hover .first {
-		margin-bottom: 16px;
-	}
-	
-	#popup_menu:hover {
-		border: 1px solid #7c4790;
-		border-width: 1px 1px 2px 1px;
-		box-shadow: 0 0 6px #7ea0cd;
-	}
-	
-	#popup_menu:hover .hidden {
-		display: block;
-	}
-
 	#button_add {
 		float: right;
 	}
 	
-	#button_import {
+	#button_show_all {
 		float: right;
 	}
 	
@@ -395,6 +390,11 @@
 			<legend>Options</legend>
 			Omnibox keyword: <strong>bt</strong><br />
 			<p class="small">Unfortunately there is no possibility to allow users to change the keyword due to chrome extension API limitations. I hope this will change in the future.</p>
+			
+			<div class="controls">
+				<button id="button_import">import bookmarks</button>
+				<button id="button_remove_all">remove all</button>
+			</div>
 		</fieldset>
 		
 		<fieldset class="tag-list">
@@ -402,19 +402,16 @@
 			<div id="tag-list"></div>
 		</fieldset>
 	</div>
-
+	
 	<fieldset class="search">
 		<legend>Search and manage my bookmarks</legend>
-		
-		<div id="popup_menu">
-			<button id="button_show_all" class="first">show all</button>
-			<button id="button_add" class="hidden">add new</button>
-			<button id="button_remove_all" class="hidden">remove all</button>
-		</div>
 		
 		<div class="search-input-block">		
 			<input type="text" name="search" placeholder="Search by tags" id="input_search" value="" autofocus />
 			<button id="button_search">search</button>
+			
+			<button id="button_add">add new</button>
+			<button id="button_show_all">show all</button>
 		</div>
 		
 		<table id="add">

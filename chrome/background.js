@@ -254,7 +254,7 @@ var bookmarksTaggerBackground = function()
 	/**
 	 * Remove all entries
 	 */
-	this.removeAll = function()
+	this.removeAll = function(aCallback)
 	{
 		var lRemoveAllRequest = window.indexedDB.open(mThis.mDatabaseName);
 		lRemoveAllRequest.onsuccess = function(aEvent)
@@ -273,6 +273,8 @@ var bookmarksTaggerBackground = function()
 				if (lResult) {
 					lResult.delete();
 					lResult.continue();
+				} else {
+					aCallback();
 				}
 			}
 		}
