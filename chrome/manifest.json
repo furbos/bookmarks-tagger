@@ -2,15 +2,17 @@
 	"name": "Bookmarks Tagger",
 	"version": "1.0",
 	"manifest_version": 2,
-	"description": "Gives tags to your bookmarks.",
+	"description": "Add tags to your bookmarks and search quickly through them from address bar.",
 
 	"icons": {
-		"16" : "icon16-off.png",
-		"48" : "icon48.png"
+		"16" : "icon16-on.png",
+		"48" : "icon48.png",
+		"96" : "icon96.png",
+		"112": "icon112.png"
 	},
 
 	"browser_action": {
-		"default_icon" : "icon16-off.png",
+		"default_icon" : "icon16-on.png",
 		"default_title": "Bookmarks Tagger",
 		"default_popup": "popup.html"
 	},
