@@ -1,4 +1,4 @@
 bookmarks-tagger
 ================
 
-Gives tags to your bookmarks.
+Find your bookmarks quickly by tagging them.
