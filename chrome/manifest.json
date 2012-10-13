@@ -1,6 +1,6 @@
 {
 	"name": "Bookmarks Tagger",
-	"version": "1.0",
+	"version": "1.1",
 	"manifest_version": 2,
 	"description": "Assign tags to your bookmarks and search for them through the address bar.",
 
@@ -16,7 +16,7 @@
 		"default_title": "Bookmarks Tagger",
 		"default_popup": "popup.html"
 	},
-
+	
 	"background": {
 		"scripts": ["global.js", "background.js"]
 	},
@@ -24,8 +24,13 @@
 	"omnibox": { "keyword": "bt" },
 
 	"permissions": [
-		"bookmarks", "tabs"
+		"bookmarks", "tabs", "*://*/*"
 	],
+	
+	"content_scripts": [{
+		"matches": [ "*://*/*" ],
+		"js"     : ["content.js"]
+	}],
 	
 	"options_page": "options.html",
 	
