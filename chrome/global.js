@@ -3,6 +3,7 @@
  */
 var KEY_TAB    = 9;
 var KEY_ENTER  = 13;
+var KEY_ALT    = 18;
 var KEY_ESCAPE = 27;
 var KEY_LEFT   = 37;
 var KEY_UP     = 38;
