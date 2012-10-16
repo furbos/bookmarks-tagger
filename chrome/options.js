@@ -33,6 +33,9 @@ function bookmarksTaggerOptions()
 			$('button_remove_all').addEventListener('click', function(aEvent) { mThis.removeAll(); });
 			$('button_show_all').addEventListener('click', function(aEvent) { mThis.showAll(); });
 			$('button_import').addEventListener('click', function(aEvent) { mThis.importBookmarks(); });
+			$('button_import_file').addEventListener('click', function(aEvent) { mThis.importFile(); });
+			$('button_export_file').addEventListener('click', function(aEvent) { mThis.exportFile(); });
+			
 			$('button_search').addEventListener('click', function(aEvent) { mThis.listenerSearchKeyUp(KEY_ENTER); });
 
 			$('input_search').addEventListener('keyup', function(aEvent) { mThis.listenerSearchKeyUp(aEvent.which); });
@@ -627,6 +630,28 @@ function bookmarksTaggerOptions()
 			$('input_search').style.backgroundImage = 'url("loading.gif")';
 			this.mBgPage.lBookmarksTaggerBackground.showAll(function(aResults) { mThis.printResults(aResults); });
 		}
+	};
+	
+	
+	/**
+	 * Import bookmarks from file
+	 */
+	this.importFile = function()
+	{
+		
+	};
+	
+	
+	/**
+	 * Export bookmarks to file
+	 */
+	this.exportFile = function()
+	{
+		var lDataDownloader = document.createElement('a');
+		var lData = new Blob(['data-to-download'], { type: 'application/octet-stream' });
+		lDataDownloader.href = window.webkitURL.createObjectURL(lData);
+		lDataDownloader.download = 'bookmarks-tagger-export.json';
+		lDataDownloader.click();
 	};
 }
 
