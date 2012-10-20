@@ -154,12 +154,18 @@ function bookmarksTaggerOptions()
 				
 				lTagList.appendChild(lTagListMore);
 			}
+			
+			if (lSortedTags.length == 0) {
+				lTagList.parentNode.hide();
+			} else {
+				lTagList.parentNode.show();
+			}
 		});
 	};
 	
 	
 	/**
-	 * When user is comming from the omnibox and there is only one results we
+	 * When user is coming from the omnibox and there is only one results we
 	 * want him to redirect to that page
 	 */
 	this.checkForRedirect = function(aResults) 
@@ -601,6 +607,7 @@ function bookmarksTaggerOptions()
 			{
 				if (aResponse.status == 'ok') {
 					mThis.searchByTags($('input_search').value, mThis.printResults);
+					mThis.loadUsedTags();
 				}
 			});
 		} else if (this.mEditExistingUrl != aPageUrl) {
@@ -611,6 +618,7 @@ function bookmarksTaggerOptions()
 					{
 						if (aResponse.status == 'ok') {
 							mThis.searchByTags($('input_search').value, mThis.printResults);
+							mThis.loadUsedTags();
 						}
 					});
 				}
