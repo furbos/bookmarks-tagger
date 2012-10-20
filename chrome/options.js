@@ -43,6 +43,8 @@ function bookmarksTaggerOptions()
 			$('add_input_tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
 			
 			$('add_button_save').addEventListener('click', function(aEvent) { mThis.saveBookmarkButton(); });
+			
+			$('x-in-search').addEventListener('click', function(aEvent) { mThis.showAll(); $('input_search').focus(); });
 		});
 	};
 	
@@ -135,7 +137,7 @@ function bookmarksTaggerOptions()
 			
 			for (var i in lSortedTags) {
 				lTag = document.createElement('a');
-				lTag.addEventListener('click', function(aEvent) { $('input_search').value = this.innerHTML; mThis.searchByTags(this.innerHTML, mThis.printResults); });
+				lTag.addEventListener('click', function(aEvent) { $('input_search').value = this.innerHTML; $('x-in-search').show(); mThis.searchByTags(this.innerHTML, mThis.printResults); });
 				lTag.innerHTML = lSortedTags[i].tag;
 				
 				lTagList.appendChild(lTag);
@@ -193,6 +195,7 @@ function bookmarksTaggerOptions()
 	
 			case KEY_ENTER:
 			default:
+				$('x-in-search').show();
 				lInputSearchValue = $('input_search').value;
 	
 				if (lInputSearchValue == '') {
@@ -623,6 +626,7 @@ function bookmarksTaggerOptions()
 	{
 		if (!this.mSearching) {
 			this.mSearching = true;
+			$('x-in-search').hide();
 			$('input_search').value = '';
 			$('input_search').style.backgroundImage = 'url("loading.gif")';
 			this.mBgPage.lBookmarksTaggerBackground.showAll(function(aResults) { mThis.printResults(aResults); });

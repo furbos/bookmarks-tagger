@@ -163,7 +163,7 @@
 
 	#input_search {
 		background-image: none;;
-		background-position: right;
+		background-position: 236px;
 		background-repeat: no-repeat;
 		width: 270px;
 	}
@@ -382,6 +382,23 @@
 		top: 5px;
 		line-height: 10px;
 	}
+
+	#x-in-search {
+		position: absolute;
+		padding: 4px;
+		background-color: #fff;
+		margin-left: 255px;
+		margin-top: -33px;
+		cursor: pointer;
+		color: #CDC9C9;
+		font-size: 130%;
+		-webkit-transition: color 250ms ease 0;
+		display: none;
+	}
+	
+	#x-in-search:hover {
+		color: #f00;
+	}
 	</style>
 </head>
 <body>
@@ -408,6 +425,7 @@
 		
 		<div class="search-input-block">		
 			<input type="text" name="search" placeholder="Search by tags" id="input_search" value="" autofocus />
+			<div id="x-in-search">✗</div>
 			<button id="button_search">search</button>
 			
 			<button id="button_add">add new</button>
