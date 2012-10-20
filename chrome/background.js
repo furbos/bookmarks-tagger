@@ -10,14 +10,41 @@ var bookmarksTaggerBackground = function()
 	this.mSuggestions = [];
 	this.mUsedTags    = {};
 	
+	this.mTransactionReadOnly  = 'readonly';
+	this.mTransactionReadWrite = 'readwrite';
+	
 
 	/**
 	 * Initialize
 	 */
 	this.initialize = function()
 	{
+		this.checkDatabaseVersion();
 		this.initializeDatabase();
 		this.addListeners();
+	};
+	
+	
+	/**
+	 * Check which connection method to use
+	 */
+	this.checkDatabaseVersion = function()
+	{
+		var lOpenDb = window.indexedDB.open(this.mDatabaseName);
+		lOpenDb.onsuccess = function(aEvent)
+		{
+			var lDb = aEvent.target.result;
+			try {
+				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadWrite);
+				var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
+				var lRequest = lObjectStore.delete(0);
+			} catch(aException) {
+				if (aException.name == 'READ_ONLY_ERR') {
+					 mThis.mTransactionReadOnly  = IDBTransaction.READ_ONLY;
+					 mThis.mTransactionReadWrite = IDBTransaction.READ_WRITE;
+				}
+			}
+		}
 	};
 	
 	
@@ -85,7 +112,7 @@ var bookmarksTaggerBackground = function()
 		lSearchTagRequest.onsuccess = function(aEvent)
 		{
 			var lDb            = aEvent.target.result;
-			var lTransaction   = lDb.transaction([mThis.mStoreBookmarks], 'readonly');
+			var lTransaction   = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadOnly);
 			var lObjectStore   = lTransaction.objectStore(mThis.mStoreBookmarks);
 			var lIndex         = lObjectStore.index(mThis.mIndexTags);
 			mThis.mSuggestions = [];
@@ -193,7 +220,7 @@ var bookmarksTaggerBackground = function()
 			lPageInfoRequest.onsuccess = function(aEvent)
 			{
 				var lDb = aEvent.target.result;
-				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readonly');
+				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadOnly);
 				var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 				
 				var lRequest = lObjectStore.get(aRequest.getPageInfo);
@@ -216,7 +243,7 @@ var bookmarksTaggerBackground = function()
 			lRemoveBookmarkRequest.onsuccess = function(aEvent)
 			{
 				var lDb = aEvent.target.result;
-				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readwrite');
+				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadWrite);
 				var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 				
 				var lRequest = lObjectStore.delete(aRequest.removeBookmark);
@@ -231,7 +258,7 @@ var bookmarksTaggerBackground = function()
 			lSaveBookmarkRequest.onsuccess = function(aEvent)
 			{
 				var lDb = aEvent.target.result;
-				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readwrite');
+				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadWrite);
 				var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 
 				var lRequest = lObjectStore.put({
@@ -260,7 +287,7 @@ var bookmarksTaggerBackground = function()
 		lRemoveAllRequest.onsuccess = function(aEvent)
 		{
 			var lDb = aEvent.target.result;
-			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readwrite');
+			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadWrite);
 			var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 			
 			var lKeyRange = window.IDBKeyRange.lowerBound(0);
@@ -290,7 +317,7 @@ var bookmarksTaggerBackground = function()
 		lRemoveRequest.onsuccess = function(aEvent)
 		{
 			var lDb = aEvent.target.result;
-			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readwrite');
+			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadWrite);
 			var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 			lObjectStore.delete(aUrl);
 		}
@@ -308,7 +335,7 @@ var bookmarksTaggerBackground = function()
 			mThis.mSuggestions = [];
 			
 			var lDb = aEvent.target.result;
-			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readonly');
+			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadOnly);
 			var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 			
 			var lKeyRange = window.IDBKeyRange.lowerBound(0);
@@ -345,7 +372,7 @@ var bookmarksTaggerBackground = function()
 			mThis.mUsedTags = {};
 			
 			var lDb = aEvent.target.result;
-			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], 'readonly');
+			var lTransaction = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadOnly);
 			var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
 			
 			var lKeyRange = window.IDBKeyRange.lowerBound(0);
