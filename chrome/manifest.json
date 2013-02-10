@@ -12,7 +12,7 @@
 	},
 
 	"browser_action": {
-		"default_icon" : "icon16-on.png",
+		"default_icon" : "icon19.png",
 		"default_title": "Bookmarks Tagger",
 		"default_popup": "popup.html"
 	},
