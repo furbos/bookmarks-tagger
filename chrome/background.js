@@ -19,12 +19,34 @@ var bookmarksTaggerBackground = function()
 	 */
 	this.initialize = function()
 	{
-		this.checkDatabaseVersion();
 		this.initializeDatabase();
+		this.checkDatabaseVersion();
 		this.addListeners();
 	};
-	
-	
+
+
+	/**
+	 * Create database and proper indexes
+	 */
+	this.initializeDatabase = function()
+	{
+		var lOpenDb = window.indexedDB.open(this.mDatabaseName);
+		lOpenDb.onsuccess = function(aEvent)
+		{
+			lDb = aEvent.target.result;
+
+			if (mThis.mDatabaseVersion !== lDb.version) {
+				lSetVersionRequest = lDb.setVersion(mThis.mDatabaseVersion);
+				lSetVersionRequest.onsuccess = function(lEvent)
+				{
+					var lObjectStore = lDb.createObjectStore(mThis.mStoreBookmarks, { keyPath: 'url' });
+					lObjectStore.createIndex(mThis.mIndexTags, mThis.mIndexTags, { unique: false, multiEntry: true });
+				};
+			}
+		}
+	};
+
+
 	/**
 	 * Check which connection method to use
 	 */
@@ -40,36 +62,14 @@ var bookmarksTaggerBackground = function()
 				var lRequest = lObjectStore.delete(0);
 			} catch(aException) {
 				if (aException.name == 'READ_ONLY_ERR') {
-					 mThis.mTransactionReadOnly  = IDBTransaction.READ_ONLY;
-					 mThis.mTransactionReadWrite = IDBTransaction.READ_WRITE;
+					mThis.mTransactionReadOnly  = IDBTransaction.READ_ONLY;
+					mThis.mTransactionReadWrite = IDBTransaction.READ_WRITE;
 				}
 			}
 		}
 	};
-	
-	
-	/**
-	 * Create database and proper indexes
-	 */
-	this.initializeDatabase = function()
-	{
-		var lOpenDb = window.indexedDB.open(this.mDatabaseName);
-		lOpenDb.onsuccess = function(aEvent)
-		{
-			lDb = aEvent.target.result;
 
-			if (mThis.mDatabaseVersion != lDb.version) {
-				lSetVersionRequest = lDb.setVersion(mThis.mDatabaseVersion);
-				lSetVersionRequest.onsuccess = function(lEvent)
-				{
-					var lObjectStore = lDb.createObjectStore(mThis.mStoreBookmarks, { keyPath: 'url' });
-					lObjectStore.createIndex(mThis.mIndexTags, mThis.mIndexTags, { unique: false, multiEntry: true });
-				};
-			}
-		}
-	};
-	
-	
+
 	/**
 	 * Add event listeners
 	 */
