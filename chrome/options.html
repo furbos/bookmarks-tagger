@@ -86,6 +86,11 @@
 		text-decoration: underline;
 		cursor: pointer;
 	}
+
+    abbr {
+        border-bottom: 1px dotted black;
+        cursor: help;
+    }
 	
 	.clear {
 		clear: both;
@@ -101,6 +106,7 @@
 	}
 	
 	.controls {
+        margin-top: 10px;
 		text-align: center;
 	}
 	
@@ -405,9 +411,10 @@
 	<div class="left-panel">
 		<fieldset class="options">
 			<legend>Options</legend>
-			Omnibox keyword: <strong>bt</strong><br />
-			<p class="small">Unfortunately there is no possibility to allow users to change the keyword due to chrome extension API limitations. I hope this will change in the future.</p>
-			
+			<abbr title="Unfortunately there is no possibility to allow users to change the keyword due to chrome extension API limitations. I hope this will change in the future.">
+                Omnibox keyword: <strong>bt</strong>
+            </abbr>
+
 			<div class="controls">
 				<button id="button_import">import bookmarks</button>
 				<button id="button_remove_all">remove all</button>
