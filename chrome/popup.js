@@ -1,4 +1,4 @@
-function bookmarksTaggerPopup()
+function BookmarksTaggerPopup()
 {
 	var mThis = this;
 	
@@ -36,15 +36,15 @@ function bookmarksTaggerPopup()
 	 */
 	this.createTagsBubbles = function()
 	{
-		lTagsBubbles         = $('tags-bubbles');
-		lTagsBubblesChildren = document.querySelectorAll('div[id="tags-bubbles"] a');
+		var lTagsBubbles         = $('tags-bubbles');
+		var lTagsBubblesChildren = document.querySelectorAll('div[id="tags-bubbles"] a');
 
 		for (var i = 0; i < lTagsBubblesChildren.length; i++) {
 			lTagsBubblesChildren[i].parentNode.removeChild(lTagsBubblesChildren[i])
 		}
 		
 		for (var j = 0; j < this.mPageTags.length; j++) {
-			lTag = document.createElement('a');
+			var lTag = document.createElement('a');
 			lTag.innerHTML = this.mPageTags[j];
 			lTag.addEventListener('click', function(aEvent) { mThis.listenerTagClick(aEvent, this); });
 			lTagsBubbles.appendChild(lTag);
@@ -88,7 +88,7 @@ function bookmarksTaggerPopup()
 	 */
 	this.listenerTagClick = function(aEvent, aElement)
 	{
-		lTag = aElement.innerHTML;
+		var lTag = aElement.innerHTML;
 		var lLeftTrim = new RegExp('\\s+' + lTag);
 		var lRightTrim = new RegExp(lTag + '\\s+');
 		
@@ -136,7 +136,7 @@ function bookmarksTaggerPopup()
 		chrome.extension.sendMessage({ saveBookmark: { url: this.mPageUrl, title: this.mPageTitle, tags: this.mPageTags }}, function(aResponse)
 		{
 			if (aResponse.status == 'ok') {
-				chrome.browserAction.setIcon({ path: 'icon16-on.png' });
+				chrome.browserAction.setIcon({ path: 'media/icon16-on.png' });
 				window.close();
 			}
 		});
@@ -151,7 +151,7 @@ function bookmarksTaggerPopup()
 		chrome.extension.sendMessage({ removeBookmark: this.mPageUrl }, function(aResponse)
 		{
 			if (aResponse.status == 'ok') {
-				chrome.browserAction.setIcon({ path: 'icon16-off.png' });
+				chrome.browserAction.setIcon({ path: 'media/icon16-off.png' });
 				window.close();
 			}
 		});
@@ -159,5 +159,5 @@ function bookmarksTaggerPopup()
 }
 
 
-var lBookmarksTaggerPopup = new bookmarksTaggerPopup();
+var lBookmarksTaggerPopup = new BookmarksTaggerPopup();
 lBookmarksTaggerPopup.initialize();

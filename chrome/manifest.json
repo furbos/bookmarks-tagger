@@ -5,14 +5,14 @@
 	"description": "Assign tags to your bookmarks and search for them through the address bar.",
 
 	"icons": {
-		"16" : "icon16-on.png",
-		"48" : "icon48.png",
-		"96" : "icon96.png",
-		"112": "icon112.png"
+		"16" : "media/icon16-on.png",
+		"48" : "media/icon48.png",
+		"96" : "media/icon96.png",
+		"112": "media/icon112.png"
 	},
 
 	"browser_action": {
-		"default_icon" : "icon19.png",
+		"default_icon" : "media/icon19.png",
 		"default_title": "Bookmarks Tagger",
 		"default_popup": "popup.html"
 	},

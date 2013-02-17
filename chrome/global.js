@@ -21,6 +21,9 @@ window.indexedDB      = window.indexedDB || window.webkitIndexedDB;
 
 /**
  * document.getElementById shortener
+ *
+ * @param aElementId
+ * @return null|Element
  */
 var $ = function(aElementId) {
 	return document.getElementById(aElementId);
@@ -29,23 +32,30 @@ var $ = function(aElementId) {
 
 /**
  * Check if the array contains the item
+ *
+ * @param aNeedle
+ * @param aHaystack
+ * @return boolean
  */
 var inArray = function(aNeedle, aHaystack)
 {
 	for (var i = 0; i < aHaystack.length; i++) {
 		if (aHaystack[i] == aNeedle) return true;
 	}
-	
+
 	return false;
 };
 
 
-/** 
+/**
  * Remove all doubles (and empty strings) from the array
+ *
+ * @param aArray
+ * @return Array
  */
 var uniqueArray = function(aArray)
 {
-	var lUniqueArray = []; 
+	var lUniqueArray = [];
 
 	for (var i in aArray) {
 		if (!inArray(aArray[i], lUniqueArray) && aArray[i].replace(/^\s+/, '').replace(/\s+$/, '') != '') lUniqueArray.push(aArray[i]);
@@ -57,6 +67,9 @@ var uniqueArray = function(aArray)
 
 /**
  * Gets an element position (left and top)
+ *
+ * @param aElement
+ * @return Object
  */
 var getElementPosition = function(aElement)
 {
@@ -75,9 +88,21 @@ var getElementPosition = function(aElement)
 
 
 /**
- * Some useful methods for html elements
+ * Escape string for use in regexp
+ *
+ * @return String
  */
-HTMLElement.prototype.toggle = function() 
+String.prototype.escapeForRegExp = function() {
+	return this.toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+};
+
+
+/**
+ * Show/Hide Element
+ *
+ * @return void
+ */
+HTMLElement.prototype.toggle = function()
 {
 	if (this.style) {
 		if (this.style.display == 'none') {
@@ -88,37 +113,123 @@ HTMLElement.prototype.toggle = function()
 	}
 };
 
-HTMLElement.prototype.hide = function() 
+
+/**
+ * Hide element
+ *
+ * @return void
+ */
+HTMLElement.prototype.hide = function()
 {
 	if (this.style) {
 		this.style.display = 'none';
 	}
 };
 
-HTMLElement.prototype.show = function() 
+
+/**
+ * Show element
+ *
+ * @return void
+ */
+HTMLElement.prototype.show = function()
 {
 	if (this.style) {
 		this.style.display = 'block';
 	}
 };
 
+
+/**
+ * Add multiple event listeners
+ *
+ * @param aEvent
+ * @param aCallback
+ * @return void
+ */
 HTMLElement.prototype.addEventListenerOriginal = HTMLElement.prototype.addEventListener;
-HTMLElement.prototype.addEventListener = function(aEvent, aCallback) 
+HTMLElement.prototype.addEventListener = function(aEvent, aCallback)
 {
 	if (!this.listeners) {
-		this.listeners = new Array();
+		this.listeners = [];
 	}
-	
+
 	this.listeners.push([aEvent, aCallback]);
-	
+
 	this.addEventListenerOriginal(aEvent, aCallback);
 };
 
-HTMLElement.prototype.removeEventListeners = function() 
+
+/**
+ * Remove all event listener
+ *
+ * @return void
+ */
+HTMLElement.prototype.removeEventListeners = function()
 {
 	if (this.listeners) {
 		for (var i = 0; i < this.listeners.length; i++) {
 			this.removeEventListener(this.listeners[i][0], this.listeners[i][1]);
 		}
 	}
+};
+
+
+/**
+ * Remove itself
+ *
+ * @return void
+ */
+HTMLElement.prototype.remove = function()
+{
+	this.parentNode.removeChild(this);
+};
+
+
+/**
+ * Remove all children within the current element
+ *
+ * @return void
+ */
+HTMLElement.prototype.removeChildren = function()
+{
+	while (this.firstChild) {
+		this.removeChild(this.firstChild);
+	}
+};
+
+
+/**
+ * Remove class from the element
+ *
+ * @param aString
+ * @return void
+ */
+HTMLElement.prototype.removeClass = function(aString)
+{
+	var lRegExp = new RegExp("\\b" + aString + "\\b");
+	this.className = this.className.replace(lRegExp, '');
+};
+
+
+/**
+ * Add class to the element
+ *
+ * @param aString
+ * @return void
+ */
+HTMLElement.prototype.addClass = function(aString)
+{
+	this.className += ' ' + aString;
+};
+
+
+/**
+ * Check if the element is active
+ *
+ * @return boolean
+ */
+HTMLElement.prototype.isActive = function()
+{
+	return (this == document.activeElement);
 };

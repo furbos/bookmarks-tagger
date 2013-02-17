@@ -33,10 +33,10 @@ var bookmarksTaggerBackground = function()
 		var lOpenDb = window.indexedDB.open(this.mDatabaseName);
 		lOpenDb.onsuccess = function(aEvent)
 		{
-			lDb = aEvent.target.result;
+			var lDb = aEvent.target.result;
 
 			if (mThis.mDatabaseVersion !== lDb.version) {
-				lSetVersionRequest = lDb.setVersion(mThis.mDatabaseVersion);
+				var lSetVersionRequest = lDb.setVersion(mThis.mDatabaseVersion);
 				lSetVersionRequest.onsuccess = function(lEvent)
 				{
 					var lObjectStore = lDb.createObjectStore(mThis.mStoreBookmarks, { keyPath: 'url' });
@@ -59,7 +59,7 @@ var bookmarksTaggerBackground = function()
 			try {
 				var lTransaction = lDb.transaction([mThis.mStoreBookmarks], mThis.mTransactionReadWrite);
 				var lObjectStore = lTransaction.objectStore(mThis.mStoreBookmarks);
-				var lRequest = lObjectStore.delete(0);
+				lObjectStore.delete(0);
 			} catch(aException) {
 				if (aException.name == 'READ_ONLY_ERR') {
 					mThis.mTransactionReadOnly  = IDBTransaction.READ_ONLY;
@@ -163,6 +163,8 @@ var bookmarksTaggerBackground = function()
 	 */
 	this.listenerOmniboxOnInputEntered = function(aText)
 	{
+		var lUrl = '';
+
 		if (aText.indexOf('http') == 0) {
 			lUrl = aText;
 		} else {
@@ -199,6 +201,7 @@ var bookmarksTaggerBackground = function()
 			}
 		}
 
+		var lDefaultDescription = '';
 		if (lSuggestions.length == 1) {
 			lDefaultDescription = 'Go directly to the "' + lSuggestions[0].description + '"';
 		} else {
@@ -228,11 +231,12 @@ var bookmarksTaggerBackground = function()
 				lRequest.onsuccess = function(aEvent)
 				{
 					var lResult = aEvent.target.result;
-					
+					var lResponse = {};
+
 					if (lResult) {
-						var lResponse = { status: 'ok', title: lResult.title, tags: lResult.tags, url: lResult.url };
+						lResponse = { status: 'ok', title: lResult.title, tags: lResult.tags, url: lResult.url };
 					} else {
-						var lResponse = { status: 'error' };
+						lResponse = { status: 'error' };
 					}
 					
 					aSendResponse(lResponse);
@@ -400,7 +404,7 @@ var bookmarksTaggerBackground = function()
 			}
 		}
 	};
-}
+};
 
 
 var lBookmarksTaggerBackground = new bookmarksTaggerBackground();

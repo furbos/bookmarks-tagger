@@ -1,10 +1,10 @@
-function bookmarksTaggerOptions() 
+function BookmarksTaggerOptions()
 {
 	var mThis = this;
 
 	this.mSearching = false;
 	this.mEditExistingUrl = false;
-	this.mBgPage;
+	this.mBgPage = false;
 	
 	this.mTagListMaxHeight = 250;
 
@@ -37,8 +37,10 @@ function bookmarksTaggerOptions()
 
 			$('input_search').addEventListener('keyup', function(aEvent) { mThis.listenerSearchKeyUp(aEvent.which); });
 
-			$('add_input_url').addEventListener('focus', function(aEvent) { mThis.listenerUrlFocus(aEvent); });
-			$('add_input_url').addEventListener('keyup', function(aEvent) { mThis.listenerUrlKeyUp(aEvent); });
+			var $add_input_url = $('add_input_url');
+			$add_input_url.addEventListener('focus', function(aEvent) { mThis.listenerUrlFocus(aEvent); });
+			$add_input_url.addEventListener('keyup', function(aEvent) { mThis.listenerUrlKeyUp(aEvent); });
+
 			$('add_input_title').addEventListener('keyup', function(aEvent) { mThis.listenerTitleKeyUp(aEvent); });
 			$('add_input_tags').addEventListener('keyup', function(aEvent) { mThis.listenerTagsKeyUp(aEvent); });
 			
@@ -54,13 +56,14 @@ function bookmarksTaggerOptions()
 	 */
 	this.initializeSearchTerm = function() 
 	{
-		lSearchTerm = decodeURIComponent(window.location.hash.substring(1));
+		var lSearchTerm = decodeURIComponent(window.location.hash.substring(1));
 
 		if (lSearchTerm) {
-			$('input_search').value = lSearchTerm;
-			$('input_search').focus();
+			var $input_search = $('input_search');
+			$input_search.value = lSearchTerm;
+			$input_search.focus();
 
-			this.searchByTags($('input_search').value, this.checkForRedirect);
+			this.searchByTags($input_search.value, this.checkForRedirect);
 		} else {
 			mThis.showAll();
 		}
@@ -73,7 +76,7 @@ function bookmarksTaggerOptions()
 	this.importBookmarks = function()
 	{
 		if (confirm('Do you want to import all bookmarks from your browser?')) {
-			lBookmarkTree = chrome.bookmarks.getTree(function(aBookmarkTreeNodes)
+			var lBookmarkTree = chrome.bookmarks.getTree(function(aBookmarkTreeNodes)
 			{
 				for (var i = 0; i < aBookmarkTreeNodes.length; i++) {
 					mThis.processBookmarkNode(aBookmarkTreeNodes[i]);
@@ -117,7 +120,7 @@ function bookmarksTaggerOptions()
 	 */
 	this.loadUsedTags = function()
 	{
-		lTagList = $('tag-list');
+		var lTagList = $('tag-list');
 		
 		while (lTagList.childNodes.length > 0) {
 			lTagList.removeChild(lTagList.firstChild);
@@ -136,19 +139,19 @@ function bookmarksTaggerOptions()
 			lSortedTags.sort(function(a, b) { return b.usage - a.usage; });
 			
 			for (var i in lSortedTags) {
-				lTag = document.createElement('a');
+				var lTag = document.createElement('a');
 				lTag.addEventListener('click', function(aEvent) { $('input_search').value = this.innerHTML; $('x-in-search').show(); mThis.searchByTags(this.innerHTML, mThis.printResults); });
 				lTag.innerHTML = lSortedTags[i].tag;
 				
 				lTagList.appendChild(lTag);
 			}
 			
-			lClearBoth = document.createElement('div');
+			var lClearBoth = document.createElement('div');
 			lClearBoth.className = 'clear';
 			lTagList.appendChild(lClearBoth);
 			
 			if (lTagList.offsetHeight > mThis.mTagListMaxHeight) {
-				lTagListMore = document.createElement('div');
+				var lTagListMore = document.createElement('div');
 				lTagListMore.id = 'tag-list-more';
 				lTagListMore.innerHTML = '↓↓↓';
 				
@@ -202,7 +205,7 @@ function bookmarksTaggerOptions()
 			case KEY_ENTER:
 			default:
 				$('x-in-search').show();
-				lInputSearchValue = $('input_search').value;
+				var lInputSearchValue = $('input_search').value;
 	
 				if (lInputSearchValue == '') {
 					this.showAll(this.printResults);
@@ -224,7 +227,7 @@ function bookmarksTaggerOptions()
 		if (!this.mSearching) {
 			if (aTags) {
 				this.mSearching = true;
-				$('input_search').style.backgroundImage = 'url("loading.gif")';
+				$('input_search').style.backgroundImage = 'url("media/loading.gif")';
 				this.mBgPage.lBookmarksTaggerBackground.searchByTags(aTags, function(aResults) { aCallback(aResults); });
 			} else {
 				this.showAll();
@@ -334,7 +337,7 @@ function bookmarksTaggerOptions()
 		if (confirm('Are you sure you want to remove this bookmark?\n\n' + aElement.attribute_title)) {
 			this.mBgPage.lBookmarksTaggerBackground.remove(aElement.attribute_url);
 
-			lTr = aElement.parentNode.parentNode;
+			var lTr = aElement.parentNode.parentNode;
 			lTr.parentNode.removeChild(lTr);
 
 			this.searchByTags($('input_search').value, mThis.printResults);
@@ -393,13 +396,13 @@ function bookmarksTaggerOptions()
 				break;
 				
 			default:
-				lPageUrl = $('add_input_url').value;
+				var lPageUrl = $('add_input_url').value;
 				if (!this.mEditExistingUrl) {
 					if (this.urlIsEmpty(lPageUrl)) {
 						this.urlExists(lPageUrl);
 					} else {
 						$('add_input_title').disabled = 'disabled';
-						$('add_input_tags').disabled = 'disabled';
+						$('add_input_tags').disabled  = 'disabled';
 						$('add_button_save').disabled = 'disabled';
 					}
 				}
@@ -413,19 +416,19 @@ function bookmarksTaggerOptions()
 	 */
 	this.urlExists = function(aUrl)
 	{
-		$('add_input_url').style.backgroundImage = 'url("loading.gif")';
+		$('add_input_url').style.backgroundImage = 'url("media/loading.gif")';
 		chrome.extension.sendMessage({ getPageInfo: aUrl }, function(aResponse)
 		{
 			if (aResponse.status == 'ok') {
 				$('infobox').removeEventListeners();
 				$('infobox').addEventListener('click', function(aEvent) { mThis.showAddEditBookmark(aResponse.url, aResponse.title, aResponse.tags.join(' ')); });
 				$('add_input_title').disabled = 'disabled';
-				$('add_input_tags').disabled = 'disabled';
+				$('add_input_tags').disabled  = 'disabled';
 				$('add_button_save').disabled = 'disabled';
 				$('infobox').show();
 			} else {
 				$('add_input_title').disabled = '';
-				$('add_input_tags').disabled = '';
+				$('add_input_tags').disabled  = '';
 				$('add_button_save').disabled = '';
 				$('infobox').hide();
 			}
@@ -475,16 +478,16 @@ function bookmarksTaggerOptions()
 	 */
 	this.createTagsBubbles = function()
 	{
-		lTagsBubbles         = $('add-tags');
-		lTagsBubblesChildren = document.querySelectorAll('td[id="add-tags"] a');
-		lPageTags            = uniqueArray($('add_input_tags').value.split(' '));
+		var lTagsBubbles         = $('add-tags');
+		var lTagsBubblesChildren = document.querySelectorAll('td[id="add-tags"] a');
+		var lPageTags            = uniqueArray($('add_input_tags').value.split(' '));
 
 		for (var i = 0; i < lTagsBubblesChildren.length; i++) {
 			lTagsBubblesChildren[i].parentNode.removeChild(lTagsBubblesChildren[i])
 		}
 		
 		for (var j = 0; j < lPageTags.length; j++) {
-			lTag = document.createElement('a');
+			var lTag = document.createElement('a');
 			lTag.innerHTML = lPageTags[j];
 			lTag.addEventListener('click', function(aEvent) { mThis.listenerTagClick(aEvent, this); });
 			lTagsBubbles.appendChild(lTag);
@@ -497,7 +500,7 @@ function bookmarksTaggerOptions()
 	 */
 	this.listenerTagClick = function(aEvent, aElement)
 	{
-		lTag = aElement.innerHTML;
+		var lTag = aElement.innerHTML;
 		var lLeftTrim = new RegExp('\\s+' + lTag);
 		var lRightTrim = new RegExp(lTag + '\\s+');
 		
@@ -636,11 +639,11 @@ function bookmarksTaggerOptions()
 			this.mSearching = true;
 			$('x-in-search').hide();
 			$('input_search').value = '';
-			$('input_search').style.backgroundImage = 'url("loading.gif")';
+			$('input_search').style.backgroundImage = 'url("media/loading.gif")';
 			this.mBgPage.lBookmarksTaggerBackground.showAll(function(aResults) { mThis.printResults(aResults); });
 		}
 	};
 }
 
-var lBookmarksTaggerOptions = new bookmarksTaggerOptions();
+var lBookmarksTaggerOptions = new BookmarksTaggerOptions();
 lBookmarksTaggerOptions.initialize();
