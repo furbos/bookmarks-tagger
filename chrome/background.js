@@ -2,7 +2,7 @@ var bookmarksTaggerBackground = function()
 {
 	var mThis = this;
 	
-	this.mDatabaseVersion = '1.0';
+	this.mDatabaseVersion = 2;
 	this.mDatabaseName    = 'bookmarks-tagger';
 	this.mStoreBookmarks  = 'bookmarks';
 	this.mIndexTags       = 'tags';
@@ -30,19 +30,14 @@ var bookmarksTaggerBackground = function()
 	 */
 	this.initializeDatabase = function()
 	{
-		var lOpenDb = window.indexedDB.open(this.mDatabaseName);
-		lOpenDb.onsuccess = function(aEvent)
+		var lOpenDb = window.indexedDB.open(this.mDatabaseName, this.mDatabaseVersion);
+		lOpenDb.onupgradeneeded = function(aEvent)
 		{
 			var lDb = aEvent.target.result;
 
-			if (mThis.mDatabaseVersion !== lDb.version) {
-				var lSetVersionRequest = lDb.setVersion(mThis.mDatabaseVersion);
-				lSetVersionRequest.onsuccess = function(lEvent)
-				{
-					var lObjectStore = lDb.createObjectStore(mThis.mStoreBookmarks, { keyPath: 'url' });
-					lObjectStore.createIndex(mThis.mIndexTags, mThis.mIndexTags, { unique: false, multiEntry: true });
-				};
-			}
+			if (lDb.objectStoreNames.contains('bookmarks')) return true;
+			var lObjectStore = lDb.createObjectStore(mThis.mStoreBookmarks, { keyPath: 'url' });
+			lObjectStore.createIndex(mThis.mIndexTags, mThis.mIndexTags, { unique: false, multiEntry: true });
 		}
 	};
 
