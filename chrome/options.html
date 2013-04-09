@@ -16,85 +16,178 @@
 	body {
 		font: 13px/22px 'Open Sans', arial, sans-serif;
 		margin: 0;
-		padding: 8px;
+		padding: 0;
 	}
 
-	input {
-		border: 1px solid #7ea0cd;
-		font-size: 100%;
-		padding: 4px;
-		font: 13px/22px 'Open Sans', arial, sans-serif;
-	}
+    input {
+        border: 1px solid #7ea0cd;
+        font-size: 100%;
+        padding: 4px;
+        font: 13px/22px 'Open Sans', arial, sans-serif;
+    }
 
-	input:focus { 
-		outline: none;
-		border-color: #7c4790;
-		box-shadow: 0 0 6px #7ea0cd;
-	}
-	
-	input:disabled {
-		background-color: #f0f0f0;
-	}
-	
-	button, button:disabled:active, button:disabled:hover {
-		box-shadow: inset 0 1px 0 rgba(256, 256, 256, .75);
-		background-color: #c0c0c0;
-		border-color: #c0c0c0 #959595 #959595 #c0c0c0;
-		border-width: 1px;
-		border-style: solid;
-		color: #000;
-		text-shadow: 0 -1px 0 rgba(255, 255, 255, .5);
-		background-image: linear-gradient(to bottom, #f0f0f0 0, #c0c0c0 100%);
-		background-image: -webkit-linear-gradient(top, #f0f0f0 0, #c0c0c0 100%);
-		outline: 0;
-		font-weight: normal;
-		padding: 4px 8px 4px 8px;
-		font: 13px/22px 'Open Sans', arial, sans-serif;
-	}
-	
-	button:hover {
-		box-shadow: 0 0 6px #c0c0c0;
-		background-image: -webkit-linear-gradient(to bottom, #c0c0c0 0, #c0c0c0 100%)
-	}
-	
-	button:active {
-		border-color: #959595 #c0c0c0 #959595 #c0c0c0;
-		box-shadow: inset 0 1px 4px rgba(0, 0, 0, .35), 0 1px 0 #fff;
-		background-image: linear-gradient(to bottom, #c0c0c0 0, #f0f0f0 100%);
-		background-image: -webkit-linear-gradient(top, #c0c0c0 0, #f0f0f0 100%);
-	}
-	
-	button:disabled, button:disabled:hover {
-		color: #a0a0a0;
-	}
-	
-	fieldset {
-		border-width: 1px 1px 2px 1px;
-		border-style: solid;
-		border-color: #7c4790;
-		margin-bottom: 12px;
-		position: relative;
-	}
-	
-		
-	legend {
-		font-weight: bold;
-		color: #7c4790;
-	}
-	
-	a {
-		text-decoration: underline;
-		cursor: pointer;
-	}
+    input:focus {
+        outline: none;
+        border-color: #7c4790;
+        box-shadow: 0 0 2px #7ea0cd;
+    }
+
+    input:disabled {
+        background-color: #f0f0f0;
+    }
+
+    button, button:disabled:active, button:disabled:hover {
+        box-shadow: inset 0 1px 0 rgba(256, 256, 256, .75);
+        background-color: #c0c0c0;
+        border-color: #c0c0c0 #959595 #959595 #c0c0c0;
+        border-width: 1px;
+        border-style: solid;
+        color: #000;
+        text-shadow: 0 -1px 0 rgba(255, 255, 255, .5);
+        background-image: linear-gradient(to bottom, #f0f0f0 0, #c0c0c0 100%);
+        background-image: -webkit-linear-gradient(top, #f0f0f0 0, #c0c0c0 100%);
+        outline: 0;
+        font-weight: normal;
+        padding: 4px 8px 4px 8px;
+        font: 13px/22px 'Open Sans', arial, sans-serif;
+    }
+
+    button:hover {
+        box-shadow: 0 0 2px #c0c0c0;
+        background-image: -webkit-linear-gradient(to bottom, #c0c0c0 0, #c0c0c0 100%)
+    }
+
+    button:active {
+        border-color: #959595 #c0c0c0 #959595 #c0c0c0;
+        box-shadow: inset 0 1px 4px rgba(0, 0, 0, .35), 0 1px 0 #fff;
+        background-image: linear-gradient(to bottom, #c0c0c0 0, #f0f0f0 100%);
+        background-image: -webkit-linear-gradient(top, #c0c0c0 0, #f0f0f0 100%);
+    }
+
+    button:disabled, button:disabled:hover {
+        color: #a0a0a0;
+    }
+
+    fieldset {
+        border-width: 1px 1px 2px 1px;
+        border-style: solid;
+        border-color: #7c4790;
+        margin-bottom: 12px;
+        position: relative;
+    }
+
+
+    legend {
+        font-weight: bold;
+        color: #7c4790;
+    }
+
+    a {
+        text-decoration: underline;
+        cursor: pointer;
+    }
 
     abbr {
         border-bottom: 1px dotted black;
         cursor: help;
     }
-	
-	.clear {
-		clear: both;
-	}
+
+    .clear {
+        clear: both;
+    }
+
+
+    body > header {
+        background-color: #fbf7fd;
+        box-shadow: inset 0 0 8px rgba(126, 160, 205, .50);
+        overflow: hidden;
+    }
+
+    header h1 {
+        margin: 0 45px 0 20px;
+        padding: 15px 0 15px 32px;
+        font-size: 120%;
+        color: #7c4790;
+        background: url('media/icon32.png') no-repeat -4px 50%;
+        width: 100px;
+        line-height: 18px;
+        float: left;
+    }
+
+    header > div {
+        position: relative;
+        top: 15px;
+    }
+
+    #input_search {
+        background-image: none;;
+        background-position: 336px;
+        background-repeat: no-repeat;
+        width: 370px;
+    }
+
+
+
+    #x-in-search {
+        position: absolute;
+        padding: 4px;
+        background-color: #fff;
+        margin-left: 554px;
+        margin-top: -33px;
+        cursor: pointer;
+        color: #CDC9C9;
+        font-size: 130%;
+        -webkit-transition: color 250ms ease 0;
+        display: block;
+    }
+
+    #x-in-search:hover {
+        color: #f00;
+    }
+
+    #popup {
+        background-color: rgba(255, 255, 255, 0.75);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        display: none;
+    }
+
+    #popup > div {
+        background-color: #fff;
+        width: 400px;
+        border: 1px solid #7c4790;
+        margin: 64px auto 0 auto;
+        /*box-shadow: 0 0 50px #fbf7fd;*/
+    }
+
+    #popup > div > section {
+        border: 4px solid #fbf7fd;
+    }
+
+    #popup > div > section > header {
+        background-color: #fbf7fd;
+        padding: 5px;
+        font-size: 115%;
+    }
+
+    #popup > div > section > div {
+        padding: 5px;
+    }
+
+    /****** old ****/
+
+
+
+
+
+
+
+
+
 		
 	.left-panel {
 		float: left;
@@ -167,13 +260,6 @@
 		margin-bottom: 10px;
 	}
 
-	#input_search {
-		background-image: none;;
-		background-position: 236px;
-		background-repeat: no-repeat;
-		width: 270px;
-	}
-	
 	p.small {
 		font-size: smaller;
 		line-height: 12px;
@@ -388,26 +474,35 @@
 		top: 5px;
 		line-height: 10px;
 	}
-
-	#x-in-search {
-		position: absolute;
-		padding: 4px;
-		background-color: #fff;
-		margin-left: 255px;
-		margin-top: -33px;
-		cursor: pointer;
-		color: #CDC9C9;
-		font-size: 130%;
-		-webkit-transition: color 250ms ease 0;
-		display: none;
-	}
-	
-	#x-in-search:hover {
-		color: #f00;
-	}
 	</style>
 </head>
 <body>
+
+    <article id="popup">
+        <div>
+            <section>
+                <header>Title</header>
+                <div id="popup_content">
+                    adasdsad
+                </div>
+            </section>
+        </div>
+    </article>
+
+    <header>
+        <h1>Bookmarks Tagger</h1>
+
+        <div>
+            <input type="text" name="search" placeholder="Search bookmarks by tags" id="input_search" value="" autofocus />
+            <div id="x-in-search">✗</div>
+            <button id="button_search">search</button>
+        </div>
+    </header>
+
+
+
+<!--
+
 	<div class="left-panel">
 		<fieldset class="options">
 			<legend>Options</legend>
@@ -431,10 +526,6 @@
 		<legend>Search and manage my bookmarks</legend>
 		
 		<div class="search-input-block">		
-			<input type="text" name="search" placeholder="Search by tags" id="input_search" value="" autofocus />
-			<div id="x-in-search">✗</div>
-			<button id="button_search">search</button>
-			
 			<button id="button_add">add new</button>
 			<button id="button_show_all">show all</button>
 		</div>
@@ -477,5 +568,7 @@
 		</table>
 		
 	</fieldset>
+-->
+
 </body>
 </html>
