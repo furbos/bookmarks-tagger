@@ -9,9 +9,11 @@ var bookmarksTaggerBackground = function()
 	
 	this.mSuggestions = [];
 	this.mUsedTags    = {};
-	
+
 	this.mTransactionReadOnly  = 'readonly';
 	this.mTransactionReadWrite = 'readwrite';
+
+	this.mGoogleAPIClientID = '799241707506.apps.googleusercontent.com';
 	
 
 	/**
@@ -21,6 +23,7 @@ var bookmarksTaggerBackground = function()
 	{
 		this.initializeDatabase();
 		this.checkDatabaseVersion();
+		this.authorizeGoogleDrive();
 		this.addListeners();
 	};
 
@@ -62,6 +65,39 @@ var bookmarksTaggerBackground = function()
 				}
 			}
 		}
+	};
+
+
+	/**
+	 * Authorize user to use Google Drive API
+	 */
+	this.authorizeGoogleDrive = function()
+	{
+		gapi.auth.authorize({
+			client_id: '',
+			scope: 'https://www.googleapis.com/auth/drive.file',
+			immediate: true
+		}, function(aResponse) {
+			console.log(aResponse);
+		});
+
+		var lScopes = [
+			'https://www.googleapis.com/auth/userinfo.email'
+		];
+
+		var oauth = ChromeExOAuth.initBackgroundPage({
+			'request_url': 'https://www.google.com/accounts/OAuthGetRequestToken',
+			'authorize_url': 'https://www.google.com/accounts/OAuthAuthorizeToken',
+			'access_url': 'https://www.google.com/accounts/OAuthGetAccessToken',
+			'consumer_key': 'anonymous',
+			'consumer_secret': 'anonymous',
+			'scope': 'https://www.googleapis.com/auth/userinfo.email',
+			'app_name': 'Bookmarks Tagger'
+		});
+
+		oauth.authorize(function(aResponse) {
+			console.log(aResponse);
+		})
 	};
 
 

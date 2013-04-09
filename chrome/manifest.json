@@ -18,13 +18,16 @@
 	},
 
 	"background": {
-		"scripts": ["global.js", "background.js"]
+		"scripts": ["global.js", "chrome_ex_oauthsimple.js", "chrome_ex_oauth.js", "background.js"]
 	},
 
 	"omnibox": { "keyword": "bt" },
 
 	"permissions": [
-		"bookmarks", "tabs"
+		"bookmarks", "tabs",
+		"https://www.google.com/accounts/OAuthGetRequestToken",
+		"https://www.google.com/accounts/OAuthAuthorizeToken",
+		"https://www.google.com/accounts/OAuthGetAccessToken"
 	],
 	
 	"options_page": "options.html",
