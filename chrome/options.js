@@ -120,6 +120,7 @@ function BookmarksTaggerOptions()
 	 */
 	this.loadUsedTags = function()
 	{
+		return true;
 		var lTagList = $('tag-list');
 		
 		while (lTagList.childNodes.length > 0) {

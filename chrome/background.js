@@ -13,7 +13,12 @@ var bookmarksTaggerBackground = function()
 	this.mTransactionReadOnly  = 'readonly';
 	this.mTransactionReadWrite = 'readwrite';
 
-	this.mGoogleAPIClientID = '799241707506.apps.googleusercontent.com';
+	this.mGoogleAPIAuthorized = false;
+	this.mGoogleAPIClientID = '799241707506-qrpcmv51maqqulrark4soctge6a7h281.apps.googleusercontent.com';
+	this.mGoogleAPIClientSecret = '8gcJdZ2lTjroyh59woXNSdFb';
+	this.mGoogleAPIScore = [
+		'https://www.googleapis.com/auth/drive.file'
+	];
 	
 
 	/**
@@ -23,7 +28,6 @@ var bookmarksTaggerBackground = function()
 	{
 		this.initializeDatabase();
 		this.checkDatabaseVersion();
-		this.authorizeGoogleDrive();
 		this.addListeners();
 	};
 
@@ -73,14 +77,16 @@ var bookmarksTaggerBackground = function()
 	 */
 	this.authorizeGoogleDrive = function()
 	{
+		console.log('auth start');
+		gapi.client.setApiKey('8gcJdZ2lTjroyh59woXNSdFb');
 		gapi.auth.authorize({
-			client_id: '',
-			scope: 'https://www.googleapis.com/auth/drive.file',
-			immediate: true
+			client_id: this.mGoogleAPIClientID,
+			scope: this.mGoogleAPIScore.join(' '),
+			immediate: false
 		}, function(aResponse) {
 			console.log(aResponse);
 		});
-
+/*
 		var lScopes = [
 			'https://www.googleapis.com/auth/userinfo.email'
 		];
@@ -97,7 +103,7 @@ var bookmarksTaggerBackground = function()
 
 		oauth.authorize(function(aResponse) {
 			console.log(aResponse);
-		})
+		})*/
 	};
 
 
@@ -250,6 +256,7 @@ var bookmarksTaggerBackground = function()
 	this.listenerExtensionOnMessage = function(aRequest, aSender, aSendResponse)
 	{
 		if (aRequest.getPageInfo) {
+			console.log(aRequest);
 			var lPageInfoRequest = window.indexedDB.open(mThis.mDatabaseName);
 			lPageInfoRequest.onsuccess = function(aEvent)
 			{
@@ -440,3 +447,10 @@ var bookmarksTaggerBackground = function()
 
 var lBookmarksTaggerBackground = new bookmarksTaggerBackground();
 lBookmarksTaggerBackground.initialize();
+
+
+function googleDriveAuth()
+{
+	console.log('start');
+	lBookmarksTaggerBackground.authorizeGoogleDrive();
+}

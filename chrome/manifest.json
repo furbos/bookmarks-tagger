@@ -18,19 +18,17 @@
 	},
 
 	"background": {
-		"scripts": ["global.js", "chrome_ex_oauthsimple.js", "chrome_ex_oauth.js", "background.js"]
+		"scripts": ["global.js", "background.js", "gapi.js"]
 	},
 
 	"omnibox": { "keyword": "bt" },
 
 	"permissions": [
 		"bookmarks", "tabs",
-		"https://www.google.com/accounts/OAuthGetRequestToken",
-		"https://www.google.com/accounts/OAuthAuthorizeToken",
-		"https://www.google.com/accounts/OAuthGetAccessToken"
+		"https://apis.google.com/"
 	],
 	
 	"options_page": "options.html",
 	
-	"content_security_policy": "script-src 'self'; object-src 'self'"
+	"content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'"
 }
